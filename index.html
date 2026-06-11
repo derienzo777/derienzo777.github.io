@@ -447,6 +447,55 @@
   }
   .expand-close:hover { color: rgba(247,244,239,0.55); }
 
+  /* ─── Password screen ─── */
+  .pw-screen {
+    position: fixed; inset: 0; z-index: 1000;
+    background: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.6s ease;
+  }
+  .pw-screen.out { opacity: 0; pointer-events: none; }
+  .pw-inner { text-align: center; padding: 40px 24px; }
+  .pw-name {
+    font-family: var(--serif); font-style: italic;
+    font-size: 18px; color: var(--ink); margin-bottom: 48px;
+    opacity: 0.45; letter-spacing: 0.01em;
+  }
+  .pw-label {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #787369; margin-bottom: 16px;
+  }
+  .pw-field-wrap {
+    display: flex; align-items: center; gap: 0;
+    border-bottom: 1px solid var(--rule); padding-bottom: 10px;
+    width: 220px; margin: 0 auto 32px;
+    transition: border-color 0.2s;
+  }
+  .pw-field-wrap:focus-within { border-color: var(--ink-warm); }
+  .pw-input {
+    flex: 1; background: none; border: none; outline: none;
+    font-family: var(--mono); font-size: 13px;
+    color: var(--ink); letter-spacing: 0.18em;
+    text-align: center; padding: 0;
+  }
+  .pw-input::placeholder { color: var(--muted); letter-spacing: 0.05em; }
+  .pw-submit {
+    background: none; border: none; cursor: pointer; padding: 0;
+    color: var(--muted); font-size: 14px; line-height: 1;
+    transition: color 0.2s;
+  }
+  .pw-submit:hover { color: var(--ink-warm); }
+  .pw-error {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-warm);
+    opacity: 0; transition: opacity 0.2s; margin-top: -20px; margin-bottom: 20px;
+  }
+  .pw-error.show { opacity: 1; }
+  .pw-hint {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
   /* ─── Bottom sheet (mobile expand) ─── */
   .sheet-backdrop {
     display: none;
@@ -868,6 +917,19 @@
 </style>
 </head>
 <body>
+
+<div class="pw-screen" id="pwScreen">
+  <div class="pw-inner">
+    <div class="pw-name">Ben De Rienzo</div>
+    <div class="pw-label">Password required</div>
+    <div class="pw-field-wrap">
+      <input class="pw-input" id="pwInput" type="password" placeholder="enter password" autocomplete="off" autofocus>
+      <button class="pw-submit" id="pwSubmit" aria-label="Submit">→</button>
+    </div>
+    <div class="pw-error" id="pwError">Incorrect password</div>
+    <div class="pw-hint">Portfolio · 2025</div>
+  </div>
+</div>
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
@@ -1550,6 +1612,38 @@
   } else {
     document.querySelectorAll('.tl-item').forEach(el => el.classList.add('in'));
   }
+})();
+
+/* ─── Password screen ─── */
+(function() {
+  var PW = '12345';
+  var screen = document.getElementById('pwScreen');
+  var input  = document.getElementById('pwInput');
+  var error  = document.getElementById('pwError');
+
+  if (sessionStorage.getItem('pw_ok') === '1') {
+    screen.style.display = 'none';
+    return;
+  }
+
+  document.body.style.overflow = 'hidden';
+
+  function attempt() {
+    if (input.value === PW) {
+      sessionStorage.setItem('pw_ok', '1');
+      screen.classList.add('out');
+      document.body.style.overflow = '';
+      setTimeout(function() { screen.style.display = 'none'; }, 650);
+    } else {
+      error.classList.add('show');
+      input.value = '';
+      input.focus();
+      setTimeout(function() { error.classList.remove('show'); }, 1800);
+    }
+  }
+
+  document.getElementById('pwSubmit').addEventListener('click', attempt);
+  input.addEventListener('keydown', function(e) { if (e.key === 'Enter') attempt(); });
 })();
 </script>
 </body>
