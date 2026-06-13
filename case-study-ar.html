@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-native AR — Ben De Rienzo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+  img { display: block; max-width: 100%; }
+  button { cursor: pointer; font-family: inherit; border: none; background: none; }
+  a { color: inherit; text-decoration: none; }
+
+  :root {
+    --cream:      #F7F4EF;
+    --cream-mid:  #EDE9E2;
+    --cream-dark: #E5E0D8;
+    --ink:        #1A1814;
+    --ink-warm:   #048C7F;
+    --muted:      #A8A39C;
+    --rule:       #D8D3CB;
+    --rule-light: #E8E4DE;
+    --serif: 'DM Serif Display', Georgia, serif;
+    --mono:  'DM Mono', 'Courier New', monospace;
+    --max: 1140px;
+    --pad-x: clamp(24px, 5vw, 72px);
+  }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ─── Cursor ─── */
+  .cursor {
+    width: 7px; height: 7px; background: var(--ink); border-radius: 50%;
+    position: fixed; top: 0; left: 0; pointer-events: none;
+    transform: translate(-50%,-50%); z-index: 9999; opacity: 0;
+    transition: transform 0.08s ease, opacity 0.3s;
+  }
+  .cursor-ring {
+    width: 32px; height: 32px; border: 0.5px solid var(--ink); border-radius: 50%;
+    position: fixed; top: 0; left: 0; pointer-events: none;
+    transform: translate(-50%,-50%); z-index: 9998; opacity: 0;
+    transition: transform 0.18s ease, width 0.2s, height 0.2s, opacity 0.3s, border-color 0.2s;
+  }
+  body:hover .cursor, body:hover .cursor-ring { opacity: 1; }
+  body.cursor-hover .cursor-ring { width: 48px; height: 48px; border-color: var(--ink-warm); }
+
+  /* ─── Nav ─── */
+  .nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 28px var(--pad-x); position: sticky; top: 0; z-index: 100;
+    background: var(--cream); border-bottom: 0.5px solid transparent;
+    transition: border-color 0.3s;
+  }
+  .nav.scrolled { border-color: var(--rule); }
+  .nav-name { font-family: var(--serif); font-size: 16px; font-style: italic; }
+  .nav-back {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #787369; display: flex; align-items: center; gap: 8px;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--ink-warm); }
+  .nav-back-arrow { font-size: 13px; }
+
+  /* ─── Hero ─── */
+  .cs-hero {
+    padding: clamp(64px, 10vw, 120px) var(--pad-x) clamp(48px, 8vw, 80px);
+    max-width: var(--max); margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 340px; gap: 80px; align-items: end;
+  }
+  .cs-eyebrow {
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #787369; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cs-eyebrow::before {
+    content: ''; display: block; width: 28px; height: 0.5px; background: var(--rule);
+  }
+  .cs-headline {
+    font-family: var(--serif); font-size: clamp(36px, 5vw, 60px);
+    line-height: 1.05; font-weight: 400; color: var(--ink);
+  }
+  .cs-headline em { font-style: italic; color: var(--ink-warm); }
+  .cs-meta { display: flex; flex-direction: column; gap: 20px; padding-bottom: 6px; }
+  .cs-meta-item { border-left: 1.5px solid var(--rule); padding-left: 16px; }
+  .cs-meta-key {
+    font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 4px;
+  }
+  .cs-meta-val { font-size: 12px; color: #4A4845; line-height: 1.5; }
+
+  /* ─── Divider ─── */
+  .cs-rule { height: 0.5px; background: var(--rule); }
+
+  /* ─── Body layout ─── */
+  .cs-body {
+    max-width: var(--max); margin: 0 auto;
+    padding: 0 var(--pad-x);
+  }
+
+  /* ─── Section ─── */
+  .cs-section {
+    display: grid; grid-template-columns: 200px 1fr; gap: 48px 80px;
+    padding: 72px 0; border-bottom: 0.5px solid var(--rule-light);
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .cs-section.in { opacity: 1; transform: translateY(0); }
+  .cs-section:last-child { border-bottom: none; }
+  .cs-section-label {
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); padding-top: 5px; line-height: 1.8;
+  }
+  .cs-section-label strong {
+    display: block; font-size: 11px; color: #787369;
+    letter-spacing: 0.06em; margin-bottom: 6px;
+  }
+  .cs-content { max-width: 640px; }
+
+  /* ─── Typography in content ─── */
+  .cs-lead {
+    font-family: var(--serif); font-size: clamp(20px, 2.5vw, 26px);
+    line-height: 1.35; font-weight: 400; color: var(--ink);
+    margin-bottom: 28px;
+  }
+  .cs-lead em { font-style: italic; color: var(--ink-warm); }
+  .cs-body-text {
+    font-size: 13px; color: #4A4845; line-height: 1.95;
+    margin-bottom: 20px;
+  }
+  .cs-body-text:last-child { margin-bottom: 0; }
+  .cs-body-text strong { color: var(--ink); font-weight: 500; }
+
+  /* ─── Pull quote ─── */
+  .cs-pull-quote {
+    border-left: 2px solid var(--ink-warm); padding: 4px 0 4px 24px;
+    margin: 32px 0;
+  }
+  .cs-pull-quote p {
+    font-family: var(--serif); font-size: clamp(17px, 2vw, 22px);
+    font-style: italic; line-height: 1.4; color: var(--ink);
+  }
+
+  /* ─── Image slots ─── */
+  .cs-visual {
+    margin: 40px 0; border-radius: 8px; overflow: hidden;
+    background: var(--cream-mid);
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .cs-visual.in { opacity: 1; transform: translateY(0); }
+  .cs-visual img { width: 100%; display: block; }
+  .cs-visual-placeholder {
+    width: 100%; aspect-ratio: 16/9;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 12px;
+    border: 1px dashed var(--rule); border-radius: 8px;
+    background: var(--cream-mid);
+  }
+  .cs-visual-placeholder-label {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .cs-visual-caption {
+    font-size: 10px; color: var(--muted); letter-spacing: 0.04em;
+    padding: 12px 0 0; line-height: 1.6;
+  }
+
+  /* ─── 3-up insight pills ─── */
+  .cs-insights {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin: 32px 0;
+  }
+  .cs-insight {
+    background: var(--cream-mid); border-radius: 6px;
+    padding: 20px; border-top: 2px solid var(--rule);
+  }
+  .cs-insight-num {
+    font-family: var(--serif); font-size: 32px; color: var(--ink);
+    line-height: 1; margin-bottom: 8px;
+  }
+  .cs-insight-num em { font-style: italic; color: var(--ink-warm); }
+  .cs-insight-label {
+    font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: #787369; line-height: 1.6;
+  }
+
+  /* ─── Strategy pillars ─── */
+  .cs-pillars { display: flex; flex-direction: column; gap: 0; margin: 32px 0; }
+  .cs-pillar {
+    padding: 20px 0; border-bottom: 0.5px solid var(--rule-light);
+    display: grid; grid-template-columns: 28px 1fr; gap: 16px; align-items: start;
+  }
+  .cs-pillar:first-child { padding-top: 0; }
+  .cs-pillar:last-child { border-bottom: none; padding-bottom: 0; }
+  .cs-pillar-num {
+    font-family: var(--serif); font-size: 13px; font-style: italic;
+    color: var(--ink-warm); padding-top: 1px;
+  }
+  .cs-pillar-title {
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink); margin-bottom: 6px; font-weight: 500;
+  }
+  .cs-pillar-body { font-size: 12px; color: #6B6760; line-height: 1.75; }
+
+  /* ─── Key learning callout ─── */
+  .cs-learning {
+    background: var(--ink); border-radius: 10px;
+    padding: 36px 40px; margin: 40px 0;
+  }
+  .cs-learning-label {
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(247,244,239,0.35); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .cs-learning-label::before {
+    content: ''; display: block; width: 20px; height: 0.5px;
+    background: var(--ink-warm);
+  }
+  .cs-learning-text {
+    font-family: var(--serif); font-size: clamp(17px, 2vw, 21px);
+    font-style: italic; line-height: 1.45; color: #F7F4EF;
+    font-weight: 400;
+  }
+  .cs-learning-text em { color: var(--ink-warm); font-style: normal; }
+
+  /* ─── Footer nav ─── */
+  .cs-footer-nav {
+    max-width: var(--max); margin: 0 auto;
+    padding: 64px var(--pad-x) 80px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 0.5px solid var(--rule);
+  }
+  .cs-footer-link {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #787369; display: flex; align-items: center; gap: 8px;
+    transition: color 0.2s;
+  }
+  .cs-footer-link:hover { color: var(--ink-warm); }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 900px) {
+    .cs-hero { grid-template-columns: 1fr; gap: 40px; }
+    .cs-meta { flex-direction: row; flex-wrap: wrap; gap: 20px; }
+    .cs-section { grid-template-columns: 1fr; gap: 24px; }
+    .cs-section-label { padding-top: 0; }
+    .cs-insights { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 600px) {
+    .cs-insights { grid-template-columns: 1fr; }
+    .cs-learning { padding: 28px 24px; }
+    .cs-footer-nav { flex-direction: column; gap: 24px; align-items: flex-start; }
+  }
+  @media (max-width: 900px) {
+    .cursor, .cursor-ring { display: none; }
+    body { cursor: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a class="nav-name" href="index.html">Ben De Rienzo</a>
+  <a class="nav-back" href="index.html#work">
+    <span class="nav-back-arrow">←</span> All work
+  </a>
+</nav>
+
+<!-- HERO -->
+<header class="cs-hero">
+  <div>
+    <div class="cs-eyebrow">AI-Native Fintech · BILL · 2025</div>
+    <h1 class="cs-headline">Automating finance<br>team workflows with<br><em>agentic AI</em></h1>
+  </div>
+  <div class="cs-meta">
+    <div class="cs-meta-item">
+      <div class="cs-meta-key">Role</div>
+      <div class="cs-meta-val">Sr. Lead Product Designer</div>
+    </div>
+    <div class="cs-meta-item">
+      <div class="cs-meta-key">Status</div>
+      <div class="cs-meta-val">In user testing</div>
+    </div>
+    <div class="cs-meta-item">
+      <div class="cs-meta-key">Users</div>
+      <div class="cs-meta-val">14M+ SMBs</div>
+    </div>
+    <div class="cs-meta-item">
+      <div class="cs-meta-key">Focus</div>
+      <div class="cs-meta-val">Agentic workflows · Trust design · AR automation</div>
+    </div>
+  </div>
+</header>
+
+<div class="cs-rule"></div>
+
+<!-- BODY -->
+<div class="cs-body">
+
+  <!-- 01 — Context -->
+  <section class="cs-section" data-reveal>
+    <div class="cs-section-label"><strong>01</strong> The problem</div>
+    <div class="cs-content">
+      <p class="cs-lead">Finance teams were spending significant time on work that shouldn't require a human.</p>
+      <p class="cs-body-text">Tracking overdue accounts, composing follow-up emails, logging outcomes — each a small task on its own, but collectively consuming hours that should be spent on judgment-heavy exceptions. Teams had built workarounds: spreadsheets, written logs, manual send queues.</p>
+      <p class="cs-body-text">Earlier automation attempts had existed, but they lacked the nuance and controls that finance teams needed to feel confident handing off outreach. So teams ended up carefully managing the process themselves anyway — the worst of both worlds.</p>
+
+      <!-- VISUAL SLOT 1 -->
+      <div class="cs-visual" data-reveal>
+        <div class="cs-visual-placeholder">
+          <div class="cs-visual-placeholder-label">Visual 1 — Current state / pain point</div>
+        </div>
+        <div class="cs-visual-caption">Caption here — e.g. "Finance clerks tracking AR follow-ups across spreadsheets and email"</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 — Approach -->
+  <section class="cs-section" data-reveal>
+    <div class="cs-section-label"><strong>02</strong> The approach</div>
+    <div class="cs-content">
+      <p class="cs-lead">We didn't build a tool. We redesigned the <em>role</em> of the finance clerk.</p>
+      <p class="cs-body-text">The goal was to move teams from directly handling communications to supervising an agent that handles the majority of the workflow. That's a meaningful shift in mental model — and it required a design strategy that made the transition feel earned rather than imposed.</p>
+      <p class="cs-body-text">We called it <strong>gradual autonomy</strong>: a staged intervention model that built trust incrementally, letting teams find their comfort level before moving to fuller automation.</p>
+
+      <div class="cs-pillars">
+        <div class="cs-pillar">
+          <div class="cs-pillar-num">1</div>
+          <div>
+            <div class="cs-pillar-title">Human-in-the-loop drafts</div>
+            <div class="cs-pillar-body">Started with draft-only mode requiring approval before any send. Built the foundational habit of reviewing agent output before extending trust.</div>
+          </div>
+        </div>
+        <div class="cs-pillar">
+          <div class="cs-pillar-num">2</div>
+          <div>
+            <div class="cs-pillar-title">Escalation design</div>
+            <div class="cs-pillar-body">Surfaced the exceptions that genuinely required human judgment — high-value accounts, disputed amounts, sensitive history — so teams knew the agent knew its limits.</div>
+          </div>
+        </div>
+        <div class="cs-pillar">
+          <div class="cs-pillar-num">3</div>
+          <div>
+            <div class="cs-pillar-title">Transparent reasoning</div>
+            <div class="cs-pillar-body">An audit trail UI surfaced why the agent made each decision — account status, payment history, prior outreach context — not just what it did.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VISUAL SLOT 2 -->
+      <div class="cs-visual" data-reveal>
+        <div class="cs-visual-placeholder">
+          <div class="cs-visual-placeholder-label">Visual 2 — Gradual autonomy model / UI</div>
+        </div>
+        <div class="cs-visual-caption">Caption here — e.g. "Draft mode UI showing agent-composed outreach with human review step"</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 — What we built -->
+  <section class="cs-section" data-reveal>
+    <div class="cs-section-label"><strong>03</strong> What we built</div>
+    <div class="cs-content">
+      <p class="cs-lead">A new way to manage AR inside the product — built around supervision, not just control.</p>
+      <p class="cs-body-text">The new workflow introduced agentic orchestration as a first-class part of the product. Teams could see what the agent was planning, why it was planning it, and what it had already done — with enough visibility to intervene or adjust at any point.</p>
+      <p class="cs-body-text">The audit trail became the trust layer. Displaying the agent's reasoning alongside account context meant teams weren't just seeing outputs — they were seeing the logic, which is what made the outputs feel safe to act on.</p>
+
+      <!-- VISUAL SLOT 3 -->
+      <div class="cs-visual" data-reveal>
+        <div class="cs-visual-placeholder">
+          <div class="cs-visual-placeholder-label">Visual 3 — Audit trail / agent reasoning UI</div>
+        </div>
+        <div class="cs-visual-caption">Caption here — e.g. "Audit trail showing AI reasoning, account context, and action history"</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 — Key learning -->
+  <section class="cs-section" data-reveal>
+    <div class="cs-section-label"><strong>04</strong> Key learning</div>
+    <div class="cs-content">
+      <div class="cs-learning">
+        <div class="cs-learning-label">Research finding</div>
+        <p class="cs-learning-text">I expected users to be hesitant about autonomous mode. Instead, <em>clear visibility into what the agent would do</em> — paired with transparent reasoning — meaningfully increased their openness to starting there.</p>
+      </div>
+      <p class="cs-body-text">The assumption going in was that finance teams would want to start slow — approvals only, manual review, conservative defaults. Research told a different story. When users could see exactly what the agent was about to do and understand why, the fear of automation dropped significantly.</p>
+      <p class="cs-body-text">What users actually wanted wasn't less autonomy — it was <strong>legible autonomy</strong>. The ability to understand and adjust agent behavior over time mattered more than starting with a restricted feature set. Transparency wasn't just a nice-to-have; it was the thing that made adoption possible.</p>
+
+      <div class="cs-pull-quote">
+        <p>"It's not that I don't trust it — I just need to know it understands the exceptions."</p>
+      </div>
+
+      <p class="cs-body-text">This shaped the core design principle for the product: <strong>show your work</strong>. Every agent action needed a visible rationale. Not buried in a log, but surfaced contextually at the point where trust was being asked for.</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER NAV -->
+<footer class="cs-footer-nav">
+  <a class="cs-footer-link" href="index.html#work">← Back to all work</a>
+  <a class="cs-footer-link" href="index.html">Ben De Rienzo ↗</a>
+</footer>
+
+<script>
+(function() {
+  /* Cursor */
+  var cursor = document.getElementById('cursor');
+  var ring   = document.getElementById('cursorRing');
+  var rx = 0, ry = 0;
+  document.addEventListener('mousemove', function(e) {
+    cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
+    rx += (e.clientX - rx) * 0.12; ry += (e.clientY - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  });
+  (function animRing() {
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  })();
+  document.querySelectorAll('a, button').forEach(function(el) {
+    el.addEventListener('mouseenter', function() { document.body.classList.add('cursor-hover'); });
+    el.addEventListener('mouseleave', function() { document.body.classList.remove('cursor-hover'); });
+  });
+
+  /* Nav scroll border */
+  window.addEventListener('scroll', function() {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  /* Scroll reveals */
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px 120px 0px' });
+
+  document.querySelectorAll('[data-reveal]').forEach(function(el) {
+    obs.observe(el);
+  });
+})();
+</script>
+</body>
+</html>
