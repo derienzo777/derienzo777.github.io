@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Links — Ben De Rienzo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+  img { display: block; max-width: 100%; }
+  button { cursor: pointer; font-family: inherit; border: none; background: none; }
+  a { color: inherit; text-decoration: none; }
+
+  :root {
+    --cream:      #F7F4EF;
+    --cream-mid:  #EDE9E2;
+    --cream-dark: #E5E0D8;
+    --ink:        #1A1814;
+    --ink-warm:   #048C7F;
+    --muted:      #A8A39C;
+    --rule:       #D8D3CB;
+    --rule-light: #E8E4DE;
+    --serif: 'DM Serif Display', Georgia, serif;
+    --mono:  'DM Mono', 'Courier New', monospace;
+    --max: 1140px;
+    --pad-x: clamp(24px, 5vw, 72px);
+  }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ─── Cursor ─── */
+  .cursor {
+    width: 7px; height: 7px; background: var(--ink); border-radius: 50%;
+    position: fixed; top: 0; left: 0; pointer-events: none;
+    transform: translate(-50%,-50%); z-index: 9999; opacity: 0;
+    transition: transform 0.08s ease, opacity 0.3s;
+  }
+  .cursor-ring {
+    width: 32px; height: 32px; border: 0.5px solid var(--ink); border-radius: 50%;
+    position: fixed; top: 0; left: 0; pointer-events: none;
+    transform: translate(-50%,-50%); z-index: 9998; opacity: 0;
+    transition: transform 0.18s ease, width 0.2s, height 0.2s, opacity 0.3s, border-color 0.2s;
+  }
+  body:hover .cursor, body:hover .cursor-ring { opacity: 1; }
+  body.cursor-hover .cursor-ring { width: 48px; height: 48px; border-color: var(--ink-warm); }
+
+  /* ─── Nav ─── */
+  .nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 28px var(--pad-x); position: sticky; top: 0; z-index: 100;
+    background: var(--cream); border-bottom: 0.5px solid transparent;
+    transition: border-color 0.3s;
+  }
+  .nav.scrolled { border-color: var(--rule); }
+  .nav-name { font-family: var(--serif); font-size: 16px; font-style: italic; }
+  .nav-back {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #787369; display: flex; align-items: center; gap: 8px;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--ink-warm); }
+  .nav-back-arrow { font-size: 13px; }
+
+  /* ─── Hero ─── */
+  .cs-hero {
+    padding: clamp(64px, 10vw, 120px) var(--pad-x) clamp(48px, 8vw, 80px);
+    max-width: var(--max); margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 340px; gap: 80px; align-items: end;
+  }
+  .cs-eyebrow {
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #787369; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cs-eyebrow::before {
+    content: ''; display: block; width: 28px; height: 0.5px; background: var(--rule);
+  }
+  .cs-headline {
+    font-family: var(--serif); font-size: clamp(36px, 5vw, 60px);
+    line-height: 1.05; font-weight: 400; color: var(--ink);
+  }
+  .cs-headline em { font-style: italic; color: var(--ink-warm); }
+  .cs-subhead {
+    font-size: 13px; color: #4A4845; line-height: 1.75;
+    margin-top: 24px; max-width: 520px;
+  }
+  .cs-meta { display: flex; flex-direction: column; gap: 20px; padding-bottom: 6px; }
+  .cs-meta-item { border-left: 1.5px solid var(--rule); padding-left: 16px; }
+  .cs-meta-key {
+    font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 4px;
+  }
+  .cs-meta-val { font-size: 12px; color: #4A4845; line-height: 1.5; }
+
+  /* ─── Divider ─── */
+  .cs-rule { height: 0.5px; background: var(--rule); }
+
+  /* ─── Body layout ─── */
+  .cs-body {
+    max-width: var(--max); margin: 0 auto;
+    padding: 0 var(--pad-x);
+  }
+
+  /* ─── Section ─── */
+  .cs-section {
+    display: grid; grid-template-columns: 200px 1fr; gap: 48px 80px;
+    padding: 72px 0; border-bottom: 0.5px solid var(--rule-light);
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .cs-section.in { opacity: 1; transform: translateY(0); }
+  .cs-section:last-child { border-bottom: none; }
+  .cs-section-label {
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); padding-top: 5px; line-height: 1.8;
+  }
+  .cs-section-label strong {
+    display: block; font-size: 11px; color: #787369;
+    letter-spacing: 0.06em; margin-bottom: 6px;
+  }
+  .cs-content { max-width: 640px; }
+
+  /* ─── Typography ─── */
+  .cs-lead {
+    font-family: var(--serif); font-size: clamp(20px, 2.5vw, 26px);
+    line-height: 1.35; font-weight: 400; color: var(--ink);
+    margin-bottom: 28px;
+  }
+  .cs-lead em { font-style: italic; color: var(--ink-warm); }
+  .cs-body-text {
+    font-size: 13px; color: #4A4845; line-height: 1.95;
+    margin-bottom: 20px;
+  }
+  .cs-body-text:last-child { margin-bottom: 0; }
+  .cs-body-text strong { color: var(--ink); font-weight: 500; }
+
+  /* ─── Pull quote ─── */
+  .cs-pull-quote {
+    border-left: 2px solid var(--ink-warm); padding: 4px 0 4px 24px;
+    margin: 32px 0;
+  }
+  .cs-pull-quote p {
+    font-family: var(--serif); font-size: clamp(17px, 2vw, 22px);
+    font-style: italic; line-height: 1.4; color: var(--ink);
+  }
+
+  /* ─── Image slots ─── */
+  .cs-visual {
+    margin: 40px 0 5px;
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .cs-visual.in { opacity: 1; transform: translateY(0); }
+  .cs-visual img { width: 100%; display: block; border-radius: 8px; overflow: hidden; }
+  .cs-visual-caption { margin-bottom: 32px; }
+  .cs-visual-placeholder {
+    width: 100%; aspect-ratio: 16/9;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 12px;
+    border: 1px dashed var(--rule); border-radius: 8px;
+    background: var(--cream-mid);
+  }
+  .cs-visual-placeholder-label {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .cs-visual-caption {
+    font-size: 10px; color: var(--muted); letter-spacing: 0.04em;
+    padding: 10px 0 0; line-height: 1.6;
+  }
+
+  /* ─── Stat pills ─── */
+  .cs-insights {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin: 32px 0;
+  }
+  .cs-insight {
+    background: var(--cream-mid); border-radius: 6px;
+    padding: 20px; border-top: 2px solid var(--rule);
+  }
+  .cs-insight-num {
+    font-family: var(--serif); font-size: 32px; color: var(--ink);
+    line-height: 1; margin-bottom: 8px;
+  }
+  .cs-insight-num em { font-style: italic; color: var(--ink-warm); }
+  .cs-insight-label {
+    font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: #787369; line-height: 1.6;
+  }
+
+  /* ─── Pillars ─── */
+  .cs-pillars { display: flex; flex-direction: column; gap: 0; margin: 32px 0; }
+  .cs-pillar {
+    padding: 20px 0; border-bottom: 0.5px solid var(--rule-light);
+    display: grid; grid-template-columns: 28px 1fr; gap: 16px; align-items: start;
+  }
+  .cs-pillar:first-child { padding-top: 0; }
+  .cs-pillar:last-child { border-bottom: none; padding-bottom: 0; }
+  .cs-pillar-num {
+    font-family: var(--serif); font-size: 13px; font-style: italic;
+    color: var(--ink-warm); padding-top: 1px;
+  }
+  .cs-pillar-title {
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink); margin-bottom: 6px; font-weight: 500;
+  }
+  .cs-pillar-body { font-size: 12px; color: #6B6760; line-height: 1.75; }
+
+  /* ─── Key learning callout ─── */
+  .cs-learning {
+    background: var(--ink); border-radius: 10px;
+    padding: 36px 40px; margin: 40px 0;
+  }
+  .cs-learning-label {
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(247,244,239,0.35); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .cs-learning-label::before {
+    content: ''; display: block; width: 20px; height: 0.5px;
+    background: var(--ink-warm);
+  }
+  .cs-learning-text {
+    font-family: var(--serif); font-size: clamp(17px, 2vw, 21px);
+    font-style: italic; line-height: 1.45; color: #F7F4EF;
+    font-weight: 400;
+  }
+  .cs-learning-text em { color: var(--ink-warm); font-style: normal; }
+
+  /* ─── Footer nav ─── */
+  .cs-footer-nav {
+    max-width: var(--max); margin: 0 auto;
+    padding: 64px var(--pad-x) 80px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 0.5px solid var(--rule);
+  }
+  .cs-footer-link {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #787369; display: flex; align-items: center; gap: 8px;
+    transition: color 0.2s;
+  }
+  .cs-footer-link:hover { color: var(--ink-warm); }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 900px) {
+    .cs-hero { grid-template-columns: 1fr; gap: 40px; }
+    .cs-meta { flex-direction: row; flex-wrap: wrap; gap: 20px; }
+    .cs-section { grid-template-columns: 1fr; gap: 24px; }
+    .cs-section-label { padding-top: 0; }
+    .cs-insights { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 600px) {
+    .cs-insights { grid-template-columns: 1fr; }
+    .cs-learning { padding: 28px 24px; }
+    .cs-footer-nav { flex-direction: column; gap: 24px; align-items: flex-start; }
+  }
+  @media (max-width: 900px) {
+    .cursor, .cursor-ring { display: none; }
+    body { cursor: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a class="nav-name" href="index.html">Ben De Rienzo</a>
+  <a class="nav-back" href="index.html#work">
+    <span class="nav-back-arrow">←</span> All work
+  </a>
+</nav>
+
+<!-- HERO -->
+<header class="cs-hero">
+  <div>
+    <div class="cs-eyebrow">Fintech · BILL · 2023</div>
+    <h1 class="cs-headline">One link.<br><em>Unlimited customers.</em></h1>
+    <p class="cs-subhead">Not every payment needs an invoice. Payment Links gave users a reusable, shareable way to collect payment for a class, a product, a workshop, or a donation — without creating paperwork for every transaction.</p>
+  </div>
+  <div class="cs-meta">
+    <div class="cs-meta-item">
+      <div class="cs-meta-key">Role</div>
+      <div class="cs-meta-val">Lead Product Designer</div>
+    </div>
+    <div class="cs-meta-item">
+      <div class="cs-meta-key">Status</div>
+      <div class="cs-meta-val">Shipped</div>
+    </div>
+    <div class="cs-meta-item">
+      <div class="cs-meta-key">Impact</div>
+      <div class="cs-meta-val">1,000 links created since launch</div>
+    </div>
+    <div class="cs-meta-item">
+      <div class="cs-meta-key">Focus</div>
+      <div class="cs-meta-val">0→1 feature design · Payer trust · Shareability</div>
+    </div>
+  </div>
+</header>
+
+<div class="cs-rule"></div>
+
+<!-- BODY -->
+<div class="cs-body">
+
+  <!-- 01 — The problem -->
+  <section class="cs-section" data-reveal>
+    <div class="cs-section-label"><strong>01</strong> The problem</div>
+    <div class="cs-content">
+      <p class="cs-lead">The product was built around invoices. That's the right tool for a consulting engagement. It's the <em>wrong tool</em> for a yoga class.</p>
+      <p class="cs-body-text">To get paid, users had to create an invoice — one per customer, every time. That model assumes a named recipient and a formal transaction. A lot of real payments don't work that way.</p>
+      <p class="cs-body-text">A medical clinic collecting a copay. A nonprofit accepting donations. An instructor charging $20 per class. These users were either forcing informal payments into invoice workflows — creating unnecessary friction — or going outside the product entirely to collect payment.</p>
+
+      <div class="cs-pull-quote">
+        <p>"Where invoices are one-to-one, a payment link works one-to-many: one link, unlimited customers, no setup required each time."</p>
+      </div>
+
+      <p class="cs-body-text">For anyone selling the same thing to multiple people, or taking payment in person, the product simply didn't fit. Payment Links was a chance to serve those use cases and keep more payment volume on platform.</p>
+    </div>
+  </section>
+
+  <!-- 02 — Research -->
+  <section class="cs-section" data-reveal>
+    <div class="cs-section-label"><strong>02</strong> Research</div>
+    <div class="cs-content">
+      <p class="cs-lead">Four distinct use cases the invoice model couldn't serve — each pointing at the same solution.</p>
+
+      <div class="cs-pillars">
+        <div class="cs-pillar">
+          <div class="cs-pillar-num">1</div>
+          <div>
+            <div class="cs-pillar-title">In-person collection</div>
+            <div class="cs-pillar-body">Medical clinics and testing centers needing a fast, contactless payment method at the point of service — no time to build an invoice on the spot.</div>
+          </div>
+        </div>
+        <div class="cs-pillar">
+          <div class="cs-pillar-num">2</div>
+          <div>
+            <div class="cs-pillar-title">Group commerce</div>
+            <div class="cs-pillar-body">Workshops, classes, and courses where the same link goes to many customers — creating a new invoice per attendee isn't viable.</div>
+          </div>
+        </div>
+        <div class="cs-pillar">
+          <div class="cs-pillar-num">3</div>
+          <div>
+            <div class="cs-pillar-title">Simple product sales</div>
+            <div class="cs-pillar-body">Single SKU sellers who didn't need the overhead of a full invoice per order. One product, one price, no configuration needed per buyer.</div>
+          </div>
+        </div>
+        <div class="cs-pillar">
+          <div class="cs-pillar-num">4</div>
+          <div>
+            <div class="cs-pillar-title">Open-amount payments</div>
+            <div class="cs-pillar-body">Donations and charitable contributions where the payer sets the amount — a fixed invoice amount is the wrong model entirely.</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="cs-body-text">Competitive research confirmed the direction: Square, Stripe, and PayPal all offered payment links, but had layered in complexity over time. Starting lean meant a faster path to adoption and a cleaner experience for both the user and the payer.</p>
+    </div>
+  </section>
+
+  <!-- 03 — Design decisions -->
+  <section class="cs-section" data-reveal>
+    <div class="cs-section-label"><strong>03</strong> Design decisions</div>
+    <div class="cs-content">
+      <p class="cs-lead">The core tension: this needed to live inside an invoice-first product without feeling like an afterthought — while serving a genuinely <em>different</em> use case.</p>
+
+      <p class="cs-body-text"><strong>Fixed and open amounts.</strong> Payment Links supports both user-defined fixed prices and open amounts the payer fills in themselves. Fixed amounts cover workshops, products, and services. Open amounts unlock donation flows. This single decision significantly expanded the range of use cases without complicating the creation flow.</p>
+
+      <p class="cs-body-text"><strong>Reusability as the core model shift.</strong> Unlike invoices, a payment link isn't consumed when used. One link works for unlimited customers, indefinitely — until the user decides otherwise. This was the fundamental shift: from one-to-one to one-to-many.</p>
+
+      <p class="cs-body-text"><strong>A customizable link page.</strong> Users can edit the title, description, and imagery that appears on the payment page — so the payer lands on something that represents what they're buying, not just a generic checkout.</p>
+
+      <p class="cs-body-text"><strong>Payer trust without starting from scratch.</strong> A key risk was payer-side trust: someone receiving a link from a business they know, but landing on an unfamiliar checkout. Rather than designing a new checkout surface, we extended the existing guest payment experience — a tested surface that internal teams and customers already trusted. This reduced design risk and accelerated implementation.</p>
+
+      <!-- VISUAL SLOT -->
+      <div class="cs-visual" data-reveal>
+        <div class="cs-visual-placeholder">
+          <div class="cs-visual-placeholder-label">Visual — Payment Links UI</div>
+        </div>
+      </div>
+      <div class="cs-visual-caption">Creation flow, link page, and payment tracking — from one place.</div>
+
+      <p class="cs-body-text"><strong>Shareability.</strong> A link is only useful if it's easy to get in front of customers. At launch: copy link, accessible directly from the Payment Links grid and the link detail page. QR codes, SMS, and embeddable payment pages are on the roadmap.</p>
+
+      <p class="cs-body-text"><strong>Performance tracking built in.</strong> Each link surfaces the number of payments received and unique customers — without needing to pull a report. Users can manage a portfolio of links and understand which are driving volume at a glance.</p>
+    </div>
+  </section>
+
+  <!-- 04 — What we scoped out -->
+  <section class="cs-section" data-reveal>
+    <div class="cs-section-label"><strong>04</strong> Scoped for v2</div>
+    <div class="cs-content">
+      <p class="cs-lead">Shipping lean was a deliberate call. Starting from what competitors had built over years wasn't the right starting line.</p>
+      <p class="cs-body-text">Several features were deliberately deferred from v1: one-time-use links that auto-expire, use limits, and expiration dates — useful for price campaigns and limited offers. These are planned additions, not things the launch feature couldn't do without.</p>
+      <p class="cs-body-text">The sharing surface is where I'd invest more upfront if doing it again. Users need easy ways to get links in front of customers in person — QR codes especially. Earlier investment there would have unlocked more in-person use cases from day one.</p>
+    </div>
+  </section>
+
+  <!-- 05 — Takeaway -->
+  <section class="cs-section" data-reveal>
+    <div class="cs-section-label"><strong>05</strong> Takeaway</div>
+    <div class="cs-content">
+      <div class="cs-insights">
+        <div class="cs-insight">
+          <div class="cs-insight-num"><em>1k</em></div>
+          <div class="cs-insight-label">Links created since launch</div>
+        </div>
+        <div class="cs-insight">
+          <div class="cs-insight-num"><em>4</em></div>
+          <div class="cs-insight-label">Distinct use cases served at launch</div>
+        </div>
+        <div class="cs-insight">
+          <div class="cs-insight-num"><em>∞</em></div>
+          <div class="cs-insight-label">Customers per link</div>
+        </div>
+      </div>
+
+      <div class="cs-learning">
+        <div class="cs-learning-label">Takeaway</div>
+        <p class="cs-learning-text">Sometimes the most valuable design work is recognizing what an existing mental model <em>can't do</em> — and building something new alongside it rather than bending it further.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER NAV -->
+<footer class="cs-footer-nav">
+  <a class="cs-footer-link" href="index.html#work">← Back to all work</a>
+  <a class="cs-footer-link" href="index.html">Ben De Rienzo ↗</a>
+</footer>
+
+<script>
+(function() {
+  /* Cursor */
+  var cursor = document.getElementById('cursor');
+  var ring   = document.getElementById('cursorRing');
+  var rx = 0, ry = 0;
+  document.addEventListener('mousemove', function(e) {
+    cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
+    rx += (e.clientX - rx) * 0.12; ry += (e.clientY - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  });
+  (function animRing() {
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  })();
+  document.querySelectorAll('a, button').forEach(function(el) {
+    el.addEventListener('mouseenter', function() { document.body.classList.add('cursor-hover'); });
+    el.addEventListener('mouseleave', function() { document.body.classList.remove('cursor-hover'); });
+  });
+
+  /* Nav scroll border */
+  window.addEventListener('scroll', function() {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  /* Scroll reveals */
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px 120px 0px' });
+
+  document.querySelectorAll('[data-reveal]').forEach(function(el) {
+    obs.observe(el);
+  });
+})();
+</script>
+</body>
+</html>
