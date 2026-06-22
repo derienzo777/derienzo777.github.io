@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booklaunch & Betterlance — Ben De Rienzo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+  img { display: block; max-width: 100%; }
+  button { cursor: pointer; font-family: inherit; border: none; background: none; }
+  a { color: inherit; text-decoration: none; }
+
+  :root {
+    --cream:      #F7F4EF;
+    --cream-mid:  #EDE9E2;
+    --cream-dark: #E5E0D8;
+    --ink:        #1A1814;
+    --ink-warm:   #048C7F;
+    --muted:      #A8A39C;
+    --rule:       #D8D3CB;
+    --rule-light: #E8E4DE;
+    --serif: 'DM Serif Display', Georgia, serif;
+    --mono:  'DM Mono', 'Courier New', monospace;
+    --max: 1140px;
+    --pad-x: clamp(24px, 5vw, 72px);
+  }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ─── Cursor ─── */
+  .cursor {
+    width: 7px; height: 7px; background: var(--ink); border-radius: 50%;
+    position: fixed; top: 0; left: 0; pointer-events: none;
+    transform: translate(-50%,-50%); z-index: 9999; opacity: 0;
+    transition: transform 0.08s ease, opacity 0.3s;
+  }
+  .cursor-ring {
+    width: 32px; height: 32px; border: 0.5px solid var(--ink); border-radius: 50%;
+    position: fixed; top: 0; left: 0; pointer-events: none;
+    transform: translate(-50%,-50%); z-index: 9998; opacity: 0;
+    transition: transform 0.18s ease, width 0.2s, height 0.2s, opacity 0.3s, border-color 0.2s;
+  }
+  body:hover .cursor, body:hover .cursor-ring { opacity: 1; }
+  body.cursor-hover .cursor-ring { width: 48px; height: 48px; border-color: var(--ink-warm); }
+
+  /* ─── Nav ─── */
+  .nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 28px var(--pad-x); position: sticky; top: 0; z-index: 100;
+    background: var(--cream); border-bottom: 0.5px solid transparent;
+    transition: border-color 0.3s;
+  }
+  .nav.scrolled { border-color: var(--rule); }
+  .nav-name { font-family: var(--serif); font-size: 16px; font-style: italic; }
+  .nav-back {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #787369; display: flex; align-items: center; gap: 8px;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--ink-warm); }
+  .nav-back-arrow { font-size: 13px; }
+
+  /* ─── Hero ─── */
+  .cs-hero {
+    padding: clamp(64px, 10vw, 120px) var(--pad-x) clamp(48px, 8vw, 80px);
+    max-width: var(--max); margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 340px; gap: 80px; align-items: end;
+  }
+  .cs-eyebrow {
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #787369; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cs-eyebrow::before {
+    content: ''; display: block; width: 28px; height: 0.5px; background: var(--rule);
+  }
+  .cs-headline {
+    font-family: var(--serif); font-size: clamp(36px, 5vw, 60px);
+    line-height: 1.05; font-weight: 400; color: var(--ink);
+  }
+  .cs-headline em { font-style: italic; color: var(--ink-warm); }
+  .cs-subhead {
+    font-size: 13px; color: #4A4845; line-height: 1.75;
+    margin-top: 24px; max-width: 520px;
+  }
+  .cs-meta { display: flex; flex-direction: column; gap: 20px; padding-bottom: 6px; }
+  .cs-meta-item { border-left: 1.5px solid var(--rule); padding-left: 16px; }
+  .cs-meta-key {
+    font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 4px;
+  }
+  .cs-meta-val { font-size: 12px; color: #4A4845; line-height: 1.5; }
+
+  /* ─── Divider ─── */
+  .cs-rule { height: 0.5px; background: var(--rule); }
+
+  /* ─── Body layout ─── */
+  .cs-body {
+    max-width: var(--max); margin: 0 auto;
+    padding: 0 var(--pad-x);
+  }
+
+  /* ─── Section ─── */
+  .cs-section {
+    display: grid; grid-template-columns: 200px 1fr; gap: 48px 80px;
+    padding: 72px 0; border-bottom: 0.5px solid var(--rule-light);
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .cs-section.in { opacity: 1; transform: translateY(0); }
+  .cs-section:last-child { border-bottom: none; }
+  .cs-section-label {
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); padding-top: 5px; line-height: 1.8;
+  }
+  .cs-section-label strong {
+    display: block; font-size: 11px; color: #787369;
+    letter-spacing: 0.06em; margin-bottom: 6px;
+  }
+  .cs-content { max-width: 640px; }
+
+  /* ─── Typography in content ─── */
+  .cs-lead {
+    font-family: var(--serif); font-size: clamp(20px, 2.5vw, 26px);
+    line-height: 1.35; font-weight: 400; color: var(--ink);
+    margin-bottom: 28px;
+  }
+  .cs-lead em { font-style: italic; color: var(--ink-warm); }
+  .cs-body-text {
+    font-size: 13px; color: #4A4845; line-height: 1.95;
+    margin-bottom: 20px;
+  }
+  .cs-body-text:last-child { margin-bottom: 0; }
+  .cs-body-text strong { color: var(--ink); font-weight: 500; }
+
+  /* ─── Product divider within a section ─── */
+  .cs-product-header {
+    display: flex; align-items: center; gap: 16px;
+    margin: 48px 0 28px;
+  }
+  .cs-product-header:first-child { margin-top: 0; }
+  .cs-product-name {
+    font-family: var(--serif); font-size: clamp(22px, 2.8vw, 30px);
+    font-weight: 400; color: var(--ink);
+  }
+  .cs-product-name em { font-style: italic; color: var(--ink-warm); }
+  .cs-product-rule { flex: 1; height: 0.5px; background: var(--rule); }
+
+  /* ─── Pull quote ─── */
+  .cs-pull-quote {
+    border-left: 2px solid var(--ink-warm); padding: 4px 0 4px 24px;
+    margin: 32px 0;
+  }
+  .cs-pull-quote p {
+    font-family: var(--serif); font-size: clamp(17px, 2vw, 22px);
+    font-style: italic; line-height: 1.4; color: var(--ink);
+  }
+
+  /* ─── Image slots ─── */
+  .cs-visual {
+    margin: 40px 0; border-radius: 8px; overflow: hidden;
+    background: var(--cream-mid);
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .cs-visual.in { opacity: 1; transform: translateY(0); }
+  .cs-visual img { width: 100%; display: block; }
+  .cs-visual-placeholder {
+    width: 100%; aspect-ratio: 16/9;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 12px;
+    border: 1px dashed var(--rule); border-radius: 8px;
+    background: var(--cream-mid);
+  }
+  .cs-visual-placeholder-label {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .cs-visual-caption {
+    font-size: 10px; color: var(--muted); letter-spacing: 0.04em;
+    padding: 12px 0 0; line-height: 1.6;
+  }
+
+  /* ─── Stat pills ─── */
+  .cs-insights {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin: 32px 0;
+  }
+  .cs-insight {
+    background: var(--cream-mid); border-radius: 6px;
+    padding: 20px; border-top: 2px solid var(--rule);
+  }
+  .cs-insight-num {
+    font-family: var(--serif); font-size: 32px; color: var(--ink);
+    line-height: 1; margin-bottom: 8px;
+  }
+  .cs-insight-num em { font-style: italic; color: var(--ink-warm); }
+  .cs-insight-label {
+    font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: #787369; line-height: 1.6;
+  }
+
+  /* ─── Responsibility list ─── */
+  .cs-pillars { display: flex; flex-direction: column; gap: 0; margin: 32px 0; }
+  .cs-pillar {
+    padding: 20px 0; border-bottom: 0.5px solid var(--rule-light);
+    display: grid; grid-template-columns: 28px 1fr; gap: 16px; align-items: start;
+  }
+  .cs-pillar:first-child { padding-top: 0; }
+  .cs-pillar:last-child { border-bottom: none; padding-bottom: 0; }
+  .cs-pillar-num {
+    font-family: var(--serif); font-size: 13px; font-style: italic;
+    color: var(--ink-warm); padding-top: 1px;
+  }
+  .cs-pillar-title {
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink); margin-bottom: 6px; font-weight: 500;
+  }
+  .cs-pillar-body { font-size: 12px; color: #6B6760; line-height: 1.75; }
+
+  /* ─── Key learning callout ─── */
+  .cs-learning {
+    background: var(--ink); border-radius: 10px;
+    padding: 36px 40px; margin: 40px 0;
+  }
+  .cs-learning-label {
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(247,244,239,0.35); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .cs-learning-label::before {
+    content: ''; display: block; width: 20px; height: 0.5px;
+    background: var(--ink-warm);
+  }
+  .cs-learning-text {
+    font-family: var(--serif); font-size: clamp(17px, 2vw, 21px);
+    font-style: italic; line-height: 1.45; color: #F7F4EF;
+    font-weight: 400;
+  }
+  .cs-learning-text em { color: var(--ink-warm); font-style: normal; }
+
+  /* ─── Footer nav ─── */
+  .cs-footer-nav {
+    max-width: var(--max); margin: 0 auto;
+    padding: 64px var(--pad-x) 80px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 0.5px solid var(--rule);
+  }
+  .cs-footer-link {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #787369; display: flex; align-items: center; gap: 8px;
+    transition: color 0.2s;
+  }
+  .cs-footer-link:hover { color: var(--ink-warm); }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 900px) {
+    .cs-hero { grid-template-columns: 1fr; gap: 40px; }
+    .cs-meta { flex-direction: row; flex-wrap: wrap; gap: 20px; }
+    .cs-section { grid-template-columns: 1fr; gap: 24px; }
+    .cs-section-label { padding-top: 0; }
+    .cs-insights { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 600px) {
+    .cs-insights { grid-template-columns: 1fr; }
+    .cs-learning { padding: 28px 24px; }
+    .cs-footer-nav { flex-direction: column; gap: 24px; align-items: flex-start; }
+  }
+  @media (max-width: 900px) {
+    .cursor, .cursor-ring { display: none; }
+    body { cursor: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a class="nav-name" href="index.html">Ben De Rienzo</a>
+  <a class="nav-back" href="index.html#work">
+    <span class="nav-back-arrow">←</span> All work
+  </a>
+</nav>
+
+<!-- HERO -->
+<header class="cs-hero">
+  <div>
+    <div class="cs-eyebrow">Co-founder & Head of Design · 2013–2021 · Both acquired by Invoice2go</div>
+    <h1 class="cs-headline">I built two products<br>from scratch. Both got<br><em>acquired.</em></h1>
+    <p class="cs-subhead">Booklaunch and Betterlance started as solutions to real problems I witnessed firsthand. Eight years later, Invoice2go acquired both — not for their technology, but because they had paying customers, proven demand, and design that made complicated things feel simple.</p>
+  </div>
+  <div class="cs-meta">
+    <div class="cs-meta-item">
+      <div class="cs-meta-key">Role</div>
+      <div class="cs-meta-val">Co-founder · Head of Design</div>
+    </div>
+    <div class="cs-meta-item">
+      <div class="cs-meta-key">Timeline</div>
+      <div class="cs-meta-val">2013–2021</div>
+    </div>
+    <div class="cs-meta-item">
+      <div class="cs-meta-key">Outcome</div>
+      <div class="cs-meta-val">Both acquired by Invoice2go · Invoice2go acquired by Bill.com</div>
+    </div>
+    <div class="cs-meta-item">
+      <div class="cs-meta-key">Focus</div>
+      <div class="cs-meta-val">0→1 product design · Brand · Growth strategy · Customer research</div>
+    </div>
+  </div>
+</header>
+
+<div class="cs-rule"></div>
+
+<!-- BODY -->
+<div class="cs-body">
+
+  <!-- 01 — What it means to build from nothing -->
+  <section class="cs-section" data-reveal>
+    <div class="cs-section-label"><strong>01</strong> The context</div>
+    <div class="cs-content">
+      <p class="cs-lead">There may be no better way to develop deep, holistic empathy than when you build something from nothing and have to <em>live off the returns.</em></p>
+      <p class="cs-body-text">At that point, empathy is how you survive. You wear every hat — because other than your co-founder, there's no one else. You sit with customers not to fill a research quota but because their answers determine what you build next week. You lose sleep over how to get the first one, then the next ten, then the next hundred.</p>
+      <p class="cs-body-text">You make sure the value is felt the moment someone lands on the page, because you wrote that page too. Cuts hurt — features, scope, sometimes whole directions. You're the one who has to make that call because the business requires it.</p>
+      <p class="cs-body-text">Being a co-founder of a small product gives you a different relationship with the work entirely. And I got to do it twice.</p>
+    </div>
+  </section>
+
+  <!-- 02 — Booklaunch -->
+  <section class="cs-section" data-reveal>
+    <div class="cs-section-label"><strong>02</strong> Booklaunch</div>
+    <div class="cs-content">
+      <p class="cs-lead">Authors could write. They just couldn't market — and every tool available made that <em>harder,</em> not easier.</p>
+      <p class="cs-body-text">My first foray as a co-founding designer was the publishing platform, Snippet — a rich multimedia mobile experience for readers and a simple publishing tool for writers. Building it illuminated a stark reality: most aspiring authors could craft stories and entire series of books, but their lack of marketing and technical skills were huge barriers to success.</p>
+      <p class="cs-body-text">I started meeting with groups of authors — published, self-published, debut writers — to understand how they marketed their work online. The same problem kept coming up: they needed a professional web presence for their book, but every solution available required either hiring a costly designer or developer, wrestling with a generic website builder not built for their use case, or giving up and posting a link to Amazon.</p>
+      <p class="cs-body-text">These were intelligent, creative people being blocked by a technical barrier that had nothing to do with whether their book was good.</p>
+
+      <div class="cs-pull-quote">
+        <p>"A general website tool with an author template bolted on wasn't the answer. It needed to be purpose-built."</p>
+      </div>
+
+      <p class="cs-body-text">Booklaunch gave authors a way to build professional book sales pages without a designer or a developer. The breakthrough was the <strong>ISBN lookup</strong>: enter one number and the page builds itself — cover image pulled automatically, complementary color palette generated from it, text and links populated. With customizable templates, built-in hosting, and seamless integrations, it was the simplest solution for authors to promote their work, engage with readers, and drive book sales.</p>
+
+      <!-- VISUAL SLOT 1 -->
+      <div class="cs-visual" data-reveal>
+        <div class="cs-visual-placeholder">
+          <div class="cs-visual-placeholder-label">Visual — Booklaunch product UI</div>
+        </div>
+        <div class="cs-visual-caption">The ISBN lookup flow: one number, and the page builds itself.</div>
+      </div>
+
+      <p class="cs-body-text">I designed everything: the brand, the marketing site, the product UI, the onboarding flow, the email templates. I also built the growth strategy — partnering with author influencers, hosting webinars inside author communities, going where the users already gathered and earning their trust before asking for anything.</p>
+
+      <div class="cs-insights">
+        <div class="cs-insight">
+          <div class="cs-insight-num"><em>10k</em>+</div>
+          <div class="cs-insight-label">Users on the platform</div>
+        </div>
+        <div class="cs-insight">
+          <div class="cs-insight-num"><em>4M</em></div>
+          <div class="cs-insight-label">Book page views facilitated</div>
+        </div>
+        <div class="cs-insight">
+          <div class="cs-insight-num"><em>1</em></div>
+          <div class="cs-insight-label">Number to build a complete page</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 — Betterlance -->
+  <section class="cs-section" data-reveal>
+    <div class="cs-section-label"><strong>03</strong> Betterlance</div>
+    <div class="cs-content">
+      <p class="cs-lead">Every CRM I tried was built for a sales team at a company. I needed something that understood how a <em>freelancer</em> actually works.</p>
+      <p class="cs-body-text">As a freelance designer, my biggest challenge wasn't doing the work — it was staying top of mind with my customer base to keep a steady stream of project requests coming in. Following up with past clients. Remembering to check in with someone I'd talked to six months ago. Staying organized enough to not let opportunities fall through the cracks.</p>
+      <p class="cs-body-text">Every existing CRM was dense, complicated, full of features designed for someone tracking a pipeline of hundreds. I needed something simple. So I built it — then talked to a host of other freelance creatives to understand whether my problem was their problem too.</p>
+      <p class="cs-body-text">It was.</p>
+      <p class="cs-body-text">Betterlance was <strong>the first CRM built specifically for freelancers</strong>. Lightweight contact management, personalized follow-up sequences, automated reminders — without the complexity of enterprise tools. The product was designed around one insight: managing relationships with your current clientele leads to significantly more work than the energy spent on marketing to brand new prospects.</p>
+
+      <!-- VISUAL SLOT 2 -->
+      <div class="cs-visual" data-reveal>
+        <div class="cs-visual-placeholder">
+          <div class="cs-visual-placeholder-label">Visual — Betterlance product UI</div>
+        </div>
+        <div class="cs-visual-caption">Contact management and follow-up sequences designed for one-person creative businesses.</div>
+      </div>
+
+      <p class="cs-body-text">From idea to MVP in 60 days. I designed the brand, product, and marketing — and handled initial customer acquisition personally, reaching into freelance communities where I already had credibility.</p>
+
+      <div class="cs-insights">
+        <div class="cs-insight">
+          <div class="cs-insight-num"><em>60</em></div>
+          <div class="cs-insight-label">Days from idea to MVP</div>
+        </div>
+        <div class="cs-insight">
+          <div class="cs-insight-num"><em>1k</em></div>
+          <div class="cs-insight-label">Users signed up at launch</div>
+        </div>
+        <div class="cs-insight">
+          <div class="cs-insight-num"><em>9mo</em></div>
+          <div class="cs-insight-label">Time to acquisition</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 — What I owned -->
+  <section class="cs-section" data-reveal>
+    <div class="cs-section-label"><strong>04</strong> What I owned</div>
+    <div class="cs-content">
+      <p class="cs-lead">I designed everything for both products. That's not an exaggeration — it's what the job actually was.</p>
+
+      <div class="cs-pillars">
+        <div class="cs-pillar">
+          <div class="cs-pillar-num">1</div>
+          <div>
+            <div class="cs-pillar-title">Brand & identity</div>
+            <div class="cs-pillar-body">Named, positioned, and visually defined both products from scratch. The brand had to do real marketing work from day one.</div>
+          </div>
+        </div>
+        <div class="cs-pillar">
+          <div class="cs-pillar-num">2</div>
+          <div>
+            <div class="cs-pillar-title">Product design</div>
+            <div class="cs-pillar-body">End-to-end UI across both products — core flows, onboarding, empty states, email templates. Every pixel of the customer experience.</div>
+          </div>
+        </div>
+        <div class="cs-pillar">
+          <div class="cs-pillar-num">3</div>
+          <div>
+            <div class="cs-pillar-title">Growth strategy</div>
+            <div class="cs-pillar-body">Author influencer partnerships, community webinars, direct outreach into the spaces where users already gathered. Built trust before asking for anything.</div>
+          </div>
+        </div>
+        <div class="cs-pillar">
+          <div class="cs-pillar-num">4</div>
+          <div>
+            <div class="cs-pillar-title">Customer research</div>
+            <div class="cs-pillar-body">Sat with users not to fill a research quota but because their answers determined what we built the following week. Turned what I heard into product decisions the same week I heard it.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 — Outcomes -->
+  <section class="cs-section" data-reveal>
+    <div class="cs-section-label"><strong>05</strong> Outcomes</div>
+    <div class="cs-content">
+      <p class="cs-lead">Both acquired by Invoice2go in 2021 — and then Invoice2go was <em>acquired by Bill.com</em> within months.</p>
+      <p class="cs-body-text">Invoice2go needed a more robust package for small micro-businesses to grow successfully. The combination of near-instant marketing website creation (Booklaunch) and customer relationship management with automated outreach (Betterlance) was a perfect fit. The addition of both products contributed to Invoice2go's acquisition by Bill.com shortly after.</p>
+
+      <div class="cs-learning">
+        <div class="cs-learning-label">What I took from this</div>
+        <p class="cs-learning-text">Being a designer who has also been a founder changes how you see every design problem. You stop asking "what do users want" in the abstract and start asking <em>"what will make someone pay, stay, and tell a friend."</em> That question makes the design better every time.</p>
+      </div>
+
+      <p class="cs-body-text">The products were acquired not for their technology but because they had paying customers, proven demand, and design that made complicated things feel simple. That's the standard I've carried into every role since.</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER NAV -->
+<footer class="cs-footer-nav">
+  <a class="cs-footer-link" href="index.html#work">← Back to all work</a>
+  <a class="cs-footer-link" href="index.html">Ben De Rienzo ↗</a>
+</footer>
+
+<script>
+(function() {
+  /* Cursor */
+  var cursor = document.getElementById('cursor');
+  var ring   = document.getElementById('cursorRing');
+  var rx = 0, ry = 0;
+  document.addEventListener('mousemove', function(e) {
+    cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
+    rx += (e.clientX - rx) * 0.12; ry += (e.clientY - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  });
+  (function animRing() {
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  })();
+  document.querySelectorAll('a, button').forEach(function(el) {
+    el.addEventListener('mouseenter', function() { document.body.classList.add('cursor-hover'); });
+    el.addEventListener('mouseleave', function() { document.body.classList.remove('cursor-hover'); });
+  });
+
+  /* Nav scroll border */
+  window.addEventListener('scroll', function() {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  /* Scroll reveals */
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px 120px 0px' });
+
+  document.querySelectorAll('[data-reveal]').forEach(function(el) {
+    obs.observe(el);
+  });
+})();
+</script>
+</body>
+</html>
