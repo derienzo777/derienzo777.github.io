@@ -171,13 +171,13 @@
 
   /* ─── Image slots ─── */
   .cs-visual {
-    margin: 40px 0; border-radius: 8px; overflow: hidden;
-    background: var(--cream-mid);
+    margin: 40px 0 8px;
     opacity: 0; transform: translateY(16px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
   .cs-visual.in { opacity: 1; transform: translateY(0); }
-  .cs-visual img { width: 100%; display: block; }
+  .cs-visual img { width: 100%; display: block; border-radius: 8px; overflow: hidden; }
+  .cs-visual-caption { margin-bottom: 32px; }
   .cs-visual-placeholder {
     width: 100%; aspect-ratio: 16/9;
     display: flex; align-items: center; justify-content: center;
@@ -359,8 +359,8 @@
       <!-- VISUAL SLOT 1 -->
       <div class="cs-visual" data-reveal>
         <img src="assets/images/founder/booklaunch.png" alt="Booklaunch product UI showing the page builder and marketing site">
-        <div class="cs-visual-caption">The ISBN lookup flow: one number, and the page builds itself.</div>
       </div>
+      <div class="cs-visual-caption">Select a section, customize it to match your book — no designer or developer needed.</div>
 
       <p class="cs-body-text">I designed everything: the brand, the marketing site, the product UI, the onboarding flow, the email templates. I also built the growth strategy — partnering with author influencers, hosting webinars inside author communities, going where the users already gathered and earning their trust before asking for anything.</p>
 
@@ -394,8 +394,8 @@
       <!-- VISUAL SLOT 2 -->
       <div class="cs-visual" data-reveal>
         <img src="assets/images/founder/betterlance.png" alt="Betterlance product UI showing contact management and follow-up sequences">
-        <div class="cs-visual-caption">Contact management and follow-up sequences designed for one-person creative businesses.</div>
       </div>
+      <div class="cs-visual-caption">Contact management and follow-up sequences designed for one-person creative businesses.</div>
 
       <p class="cs-body-text">From idea to MVP in 60 days. I designed the brand, product, and marketing — and handled initial customer acquisition personally, reaching into freelance communities where I already had credibility.</p>
 
