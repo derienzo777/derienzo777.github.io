@@ -1115,6 +1115,29 @@
 
       <div class="row-spacer" id="spacer-1"></div>
 
+      <div class="thumb thumb-wide" data-idx="7" data-row="2" data-delay="520" style="grid-column:span 2">
+        <div class="thumb-inner">
+          <svg class="thumb-pattern" viewBox="0 0 360 120" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <line x1="32" y1="96" x2="328" y2="96" stroke="#048C7F" stroke-width="0.5"/>
+            <polyline points="32,82 80,70 128,56 176,40 224,28 272,18" fill="none" stroke="#048C7F" stroke-width="1.5"/>
+            <circle cx="32"  cy="82" r="3" fill="#048C7F"/>
+            <circle cx="128" cy="56" r="3" fill="none" stroke="#048C7F" stroke-width="1"/>
+            <circle cx="224" cy="28" r="3" fill="none" stroke="#048C7F" stroke-width="1"/>
+            <circle cx="272" cy="18" r="4" fill="#048C7F"/>
+            <line x1="290" y1="38" x2="310" y2="58" stroke="#048C7F" stroke-width="1" opacity="0.4"/>
+            <line x1="310" y1="38" x2="310" y2="72" stroke="#048C7F" stroke-width="1.5" opacity="0.5"/>
+            <line x1="305" y1="72" x2="315" y2="72" stroke="#048C7F" stroke-width="1.5" opacity="0.5"/>
+          </svg>
+          <div class="thumb-sweep" aria-hidden="true"></div>
+          <div class="thumb-meta">
+            <div class="thumb-tag">Mobile health · 2018</div>
+            <div class="thumb-title">Growlink</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row-spacer" id="spacer-2"></div>
+
     </div>
 
     <div class="caps-row" id="capsRow">
@@ -1385,6 +1408,7 @@
     { row:0, eyebrow:'B2B payments · BILL · 2022', title:'Supplier Payments <em>redesigned</em>', desc:'Supplier Payments Plus unified how businesses pay vendors — smarter defaults, fewer errors, clearer status. Led the UX across the full payment lifecycle during a period of heavy org change.', img:'', imgLabel:'Supplier Payments+', meta:[{k:'Role',v:'Lead designer'},{k:'Scope',v:'End-to-end'},{k:'Outcome',v:'Engaged units high'}] },
     { row:1, eyebrow:'SaaS products · 2013 to 2021 · Both acquired', title:'Two startups. <em>Both acquired.</em>', desc:'Booklaunch helped authors create professional book sales pages without a developer. Betterlance gave freelancers a CRM to grow their business. Both were acquired by Invoice2go in 2021.', img:'assets/images/sample-booklaunch.png', imgLabel:'Booklaunch & Betterlance', meta:[{k:'Role',v:'Co-founder, Head of Design'},{k:'Years',v:'8 years'},{k:'Outcome',v:'Acquired by Invoice2go'}] },
     { row:1, eyebrow:'Enterprise SaaS · See Sweet · 2020', title:'Innovation management for <em>energy companies</em>', desc:'As sole product designer at Forest Software, I designed an innovation management platform for large energy companies — tracking ideas from concept through funding and implementation.', img:'', imgLabel:'Forest Software', meta:[{k:'Role',v:'Sole designer'},{k:'Sector',v:'Fortune 500 energy'},{k:'Type',v:'Enterprise SaaS'}] },
+    { row:2, eyebrow:'Mobile health · iOS · 2018', title:'Making <em>treatment stick</em>', desc:'Growlink helped kids and caregivers build a routine around daily growth hormone injections — a painful, lonely process. Alerts for injection timing, progress tracking, and a library of educational resources turned a clinical obligation into something patients could take ownership of. Published research confirmed that more engaged users showed greater improvement in adherence.', img:'', imgLabel:'Growlink', meta:[{k:'Role',v:'Lead designer'},{k:'Platform',v:'iOS'},{k:'Outcome',v:'Measurable adherence improvement'}] },
     { row:1, eyebrow:'Enterprise suite · SBM Management · 2016', title:'Performance software <em>redesigned</em>', desc:'Led a creative team of 10 to 15 designers and writers to redesign the enterprise performance management software suite — rebuilt app infrastructure, personnel modules, and training library.', img:'', imgLabel:'Enterprise Suite', meta:[{k:'Role',v:'Design Director'},{k:'Team',v:'10-15 designers'},{k:'Client',v:'Fortune 50'}] }
   ];
 
@@ -1419,7 +1443,7 @@
     return img;
   }
 
-  var activeByRow = { 0: -1, 1: -1 };
+  var activeByRow = { 0: -1, 1: -1, 2: -1 };
 
   function buildPanel(row, idx) {
     var d = workData[idx];
