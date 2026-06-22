@@ -9,245 +9,204 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; font-size: 16px; }
+  html { scroll-behavior: smooth; }
   img { display: block; max-width: 100%; }
-  button { cursor: pointer; font-family: inherit; border: none; background: none; }
   a { color: inherit; text-decoration: none; }
 
   :root {
-    --cream:      #F7F4EF;
-    --cream-mid:  #EDE9E2;
-    --cream-dark: #E5E0D8;
-    --ink:        #1A1814;
-    --ink-warm:   #048C7F;
-    --muted:      #A8A39C;
-    --rule:       #D8D3CB;
-    --rule-light: #E8E4DE;
+    --cream:     #F7F4EF;
+    --ink:       #1A1814;
+    --ink-warm:  #048C7F;
+    --muted:     #A8A39C;
+    --rule:      #D8D3CB;
     --serif: 'DM Serif Display', Georgia, serif;
     --mono:  'DM Mono', 'Courier New', monospace;
-    --max: 1140px;
-    --pad-x: clamp(24px, 5vw, 72px);
   }
 
   body {
-    background: var(--cream);
-    color: var(--ink);
+    background: var(--ink);
+    color: var(--cream);
     font-family: var(--mono);
     font-size: 13px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
     cursor: none;
+    overflow-x: hidden;
   }
 
   /* ─── Cursor ─── */
   .cursor {
-    width: 7px; height: 7px; background: var(--ink); border-radius: 50%;
+    width: 7px; height: 7px; background: var(--cream); border-radius: 50%;
     position: fixed; top: 0; left: 0; pointer-events: none;
     transform: translate(-50%,-50%); z-index: 9999; opacity: 0;
-    transition: transform 0.08s ease, opacity 0.3s;
+    transition: opacity 0.3s;
   }
   .cursor-ring {
-    width: 32px; height: 32px; border: 0.5px solid var(--ink); border-radius: 50%;
+    width: 32px; height: 32px; border: 0.5px solid rgba(247,244,239,0.4); border-radius: 50%;
     position: fixed; top: 0; left: 0; pointer-events: none;
     transform: translate(-50%,-50%); z-index: 9998; opacity: 0;
-    transition: transform 0.18s ease, width 0.2s, height 0.2s, opacity 0.3s, border-color 0.2s;
+    transition: width 0.2s, height 0.2s, opacity 0.3s, border-color 0.2s;
   }
   body:hover .cursor, body:hover .cursor-ring { opacity: 1; }
-  body.cursor-hover .cursor-ring { width: 48px; height: 48px; border-color: var(--ink-warm); }
+  body.cursor-hover .cursor-ring { width: 44px; height: 44px; border-color: var(--ink-warm); }
 
   /* ─── Nav ─── */
   .nav {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 28px var(--pad-x); position: sticky; top: 0; z-index: 100;
-    background: var(--cream); border-bottom: 0.5px solid transparent;
-    transition: border-color 0.3s;
+    padding: 28px clamp(24px, 5vw, 72px);
+    border-bottom: 0.5px solid rgba(247,244,239,0.08);
   }
-  .nav.scrolled { border-color: var(--rule); }
-  .nav-name { font-family: var(--serif); font-size: 16px; font-style: italic; }
+  .nav-name { font-family: var(--serif); font-size: 16px; font-style: italic; opacity: 0.5; }
   .nav-back {
     font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: #787369; display: flex; align-items: center; gap: 8px;
+    color: rgba(247,244,239,0.4); display: flex; align-items: center; gap: 8px;
     transition: color 0.2s;
   }
   .nav-back:hover { color: var(--ink-warm); }
 
-  /* ─── Hero ─── */
-  .cs-hero {
-    padding: clamp(64px, 10vw, 120px) var(--pad-x) clamp(48px, 8vw, 80px);
-    max-width: var(--max); margin: 0 auto;
-    display: grid; grid-template-columns: 1fr 340px; gap: 80px; align-items: end;
+  /* ─── Intro block ─── */
+  .intro {
+    padding: clamp(72px, 12vw, 140px) clamp(24px, 5vw, 72px) 0;
+    max-width: 900px;
   }
-  .cs-eyebrow {
-    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: #787369; margin-bottom: 20px;
+  .intro-label {
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-warm); margin-bottom: 28px;
     display: flex; align-items: center; gap: 12px;
   }
-  .cs-eyebrow::before {
-    content: ''; display: block; width: 28px; height: 0.5px; background: var(--rule);
+  .intro-label::before {
+    content: ''; display: block; width: 20px; height: 0.5px; background: var(--ink-warm);
   }
-  .cs-headline {
-    font-family: var(--serif); font-size: clamp(36px, 5vw, 60px);
-    line-height: 1.05; font-weight: 400; color: var(--ink);
+  .intro-headline {
+    font-family: var(--serif); font-size: clamp(42px, 6vw, 80px);
+    line-height: 1.0; font-weight: 400; color: var(--cream);
+    margin-bottom: 40px;
   }
-  .cs-headline em { font-style: italic; color: var(--ink-warm); }
-  .cs-subhead {
-    font-size: 13px; color: #4A4845; line-height: 1.75;
-    margin-top: 24px; max-width: 520px;
-  }
-  .cs-meta { display: flex; flex-direction: column; gap: 20px; padding-bottom: 6px; }
-  .cs-meta-item { border-left: 1.5px solid var(--rule); padding-left: 16px; }
-  .cs-meta-key {
-    font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 4px;
-  }
-  .cs-meta-val { font-size: 12px; color: #4A4845; line-height: 1.5; }
+  .intro-headline em { font-style: italic; color: var(--ink-warm); }
 
-  /* ─── Divider ─── */
-  .cs-rule { height: 0.5px; background: var(--rule); }
-
-  /* ─── Body layout ─── */
-  .cs-body {
-    max-width: var(--max); margin: 0 auto;
-    padding: 0 var(--pad-x);
+  /* ─── Main canvas ─── */
+  .canvas {
+    padding: clamp(64px, 8vw, 100px) clamp(24px, 5vw, 72px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px 100px;
+    max-width: 1100px;
   }
 
-  /* ─── Section ─── */
-  .cs-section {
-    display: grid; grid-template-columns: 200px 1fr; gap: 48px 80px;
-    padding: 72px 0; border-bottom: 0.5px solid var(--rule-light);
-    opacity: 0; transform: translateY(24px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+  /* ─── Text block ─── */
+  .block { display: flex; flex-direction: column; gap: 0; }
+  .block-label {
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(247,244,239,0.3); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
   }
-  .cs-section.in { opacity: 1; transform: translateY(0); }
-  .cs-section:last-child { border-bottom: none; }
-  .cs-section-label {
-    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--muted); padding-top: 5px; line-height: 1.8;
+  .block-label::before {
+    content: ''; display: block; width: 16px; height: 0.5px; background: var(--ink-warm);
   }
-  .cs-section-label strong {
-    display: block; font-size: 11px; color: #787369;
-    letter-spacing: 0.06em; margin-bottom: 6px;
+  .block-text {
+    font-size: 13px; color: rgba(247,244,239,0.65); line-height: 1.9;
+    margin-bottom: 16px;
   }
-  .cs-content { max-width: 640px; }
+  .block-text:last-child { margin-bottom: 0; }
+  .block-text strong { color: rgba(247,244,239,0.9); font-weight: 500; }
 
-  /* ─── Typography ─── */
-  .cs-lead {
-    font-family: var(--serif); font-size: clamp(20px, 2.5vw, 26px);
-    line-height: 1.35; font-weight: 400; color: var(--ink);
-    margin-bottom: 28px;
+  /* ─── Quotes ─── */
+  .quotes { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 0; }
+  .quote {
+    padding: 32px 0;
+    border-top: 0.5px solid rgba(247,244,239,0.08);
+    display: grid; grid-template-columns: 40px 1fr; gap: 24px; align-items: start;
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .cs-lead em { font-style: italic; color: var(--ink-warm); }
-  .cs-body-text {
-    font-size: 13px; color: #4A4845; line-height: 1.95;
-    margin-bottom: 20px;
+  .quote.in { opacity: 1; transform: translateY(0); }
+  .quote:last-child { border-bottom: 0.5px solid rgba(247,244,239,0.08); }
+  .quote-mark {
+    font-family: var(--serif); font-size: 40px; font-style: italic;
+    color: var(--ink-warm); line-height: 1; padding-top: 4px; opacity: 0.7;
   }
-  .cs-body-text:last-child { margin-bottom: 0; }
-  .cs-body-text strong { color: var(--ink); font-weight: 500; }
-
-  /* ─── Quote cards ─── */
-  .cs-quotes { display: flex; flex-direction: column; gap: 0; margin: 32px 0; }
-  .cs-quote-card {
-    padding: 24px 0; border-bottom: 0.5px solid var(--rule-light);
-  }
-  .cs-quote-card:last-child { border-bottom: none; padding-bottom: 0; }
-  .cs-quote-text {
-    font-family: var(--serif); font-size: clamp(15px, 1.8vw, 18px);
-    font-style: italic; line-height: 1.5; color: var(--ink);
-    margin-bottom: 10px;
-  }
-  .cs-quote-attr {
-    font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--muted);
+  .quote-text {
+    font-family: var(--serif); font-size: clamp(16px, 1.8vw, 20px);
+    font-style: italic; line-height: 1.5; color: rgba(247,244,239,0.85);
   }
 
-  /* ─── Trait pills ─── */
-  .cs-traits {
-    display: grid; grid-template-columns: repeat(2, 1fr);
-    gap: 12px; margin: 32px 0;
+  /* ─── AI section ─── */
+  .ai-section {
+    grid-column: 1 / -1;
+    border-top: 0.5px solid rgba(247,244,239,0.08);
+    padding-top: 64px;
   }
-  .cs-trait {
-    background: var(--cream-mid); border-radius: 6px;
-    padding: 18px 20px; border-top: 2px solid var(--rule);
+  .ai-label {
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(247,244,239,0.3); margin-bottom: 32px;
+    display: flex; align-items: center; gap: 10px;
   }
-  .cs-trait-title {
+  .ai-label::before {
+    content: ''; display: block; width: 16px; height: 0.5px; background: var(--ink-warm);
+  }
+  .ai-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .ai-card {
+    background: rgba(247,244,239,0.04); border-radius: 8px;
+    padding: 24px; border: 0.5px solid rgba(247,244,239,0.08);
+    transition: background 0.2s;
+  }
+  .ai-card:hover { background: rgba(247,244,239,0.07); }
+  .ai-card-title {
     font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--ink); font-weight: 500; margin-bottom: 6px;
+    color: rgba(247,244,239,0.7); font-weight: 500; margin-bottom: 10px;
   }
-  .cs-trait-body { font-size: 12px; color: #6B6760; line-height: 1.75; }
-
-  /* ─── AI tool list ─── */
-  .cs-tools { display: flex; flex-direction: column; gap: 0; margin: 32px 0; }
-  .cs-tool {
-    padding: 20px 0; border-bottom: 0.5px solid var(--rule-light);
-    display: grid; grid-template-columns: 28px 1fr; gap: 16px; align-items: start;
+  .ai-card-body {
+    font-size: 12px; color: rgba(247,244,239,0.45); line-height: 1.75;
+    margin-bottom: 14px;
   }
-  .cs-tool:first-child { padding-top: 0; }
-  .cs-tool:last-child { border-bottom: none; padding-bottom: 0; }
-  .cs-tool-num {
-    font-family: var(--serif); font-size: 13px; font-style: italic;
-    color: var(--ink-warm); padding-top: 1px;
-  }
-  .cs-tool-title {
-    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--ink); margin-bottom: 6px; font-weight: 500;
-  }
-  .cs-tool-body { font-size: 12px; color: #6B6760; line-height: 1.75; }
-  .cs-tool-stack {
-    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
-  }
-  .cs-tool-tag {
-    font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
-    background: var(--cream-dark); color: #787369;
+  .ai-card-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .ai-tag {
+    font-size: 9px; letter-spacing: 0.07em; text-transform: uppercase;
+    background: rgba(4,140,127,0.15); color: var(--ink-warm);
     padding: 3px 8px; border-radius: 3px;
   }
 
-  /* ─── Learning callout ─── */
-  .cs-learning {
-    background: var(--ink); border-radius: 10px;
-    padding: 36px 40px; margin: 40px 0;
+  /* ─── Closing line ─── */
+  .closing {
+    grid-column: 1 / -1;
+    padding: 64px 0 0;
+    border-top: 0.5px solid rgba(247,244,239,0.08);
   }
-  .cs-learning-label {
-    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
-    color: rgba(247,244,239,0.35); margin-bottom: 16px;
-    display: flex; align-items: center; gap: 10px;
+  .closing-text {
+    font-family: var(--serif); font-size: clamp(22px, 3vw, 36px);
+    font-style: italic; line-height: 1.3; color: rgba(247,244,239,0.5);
+    max-width: 700px;
   }
-  .cs-learning-label::before {
-    content: ''; display: block; width: 20px; height: 0.5px;
-    background: var(--ink-warm);
-  }
-  .cs-learning-text {
-    font-family: var(--serif); font-size: clamp(17px, 2vw, 21px);
-    font-style: italic; line-height: 1.45; color: #F7F4EF;
-    font-weight: 400;
-  }
-  .cs-learning-text em { color: var(--ink-warm); font-style: normal; }
+  .closing-text em { color: var(--cream); font-style: normal; }
 
-  /* ─── Footer nav ─── */
-  .cs-footer-nav {
-    max-width: var(--max); margin: 0 auto;
-    padding: 64px var(--pad-x) 80px;
+  /* ─── Footer ─── */
+  .foot {
+    padding: 48px clamp(24px, 5vw, 72px) 64px;
     display: flex; justify-content: space-between; align-items: center;
-    border-top: 0.5px solid var(--rule);
+    border-top: 0.5px solid rgba(247,244,239,0.08);
   }
-  .cs-footer-link {
+  .foot-link {
     font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: #787369; display: flex; align-items: center; gap: 8px;
-    transition: color 0.2s;
+    color: rgba(247,244,239,0.3); transition: color 0.2s;
   }
-  .cs-footer-link:hover { color: var(--ink-warm); }
+  .foot-link:hover { color: var(--ink-warm); }
 
-  /* ─── Responsive ─── */
-  @media (max-width: 900px) {
-    .cs-hero { grid-template-columns: 1fr; gap: 40px; }
-    .cs-meta { flex-direction: row; flex-wrap: wrap; gap: 20px; }
-    .cs-section { grid-template-columns: 1fr; gap: 24px; }
-    .cs-section-label { padding-top: 0; }
-    .cs-traits { grid-template-columns: 1fr; }
+  /* ─── Reveal ─── */
+  .reveal {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
   }
-  @media (max-width: 600px) {
-    .cs-learning { padding: 28px 24px; }
-    .cs-footer-nav { flex-direction: column; gap: 24px; align-items: flex-start; }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 800px) {
+    .canvas { grid-template-columns: 1fr; gap: 56px; }
+    .quotes { grid-column: 1; }
+    .ai-section { grid-column: 1; }
+    .ai-grid { grid-template-columns: 1fr; }
+    .closing { grid-column: 1; }
+    .quote { grid-template-columns: 30px 1fr; }
   }
   @media (max-width: 900px) {
     .cursor, .cursor-ring { display: none; }
@@ -260,189 +219,114 @@
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
-<!-- NAV -->
-<nav class="nav" id="nav">
+<nav class="nav">
   <a class="nav-name" href="index.html">Ben De Rienzo</a>
-  <a class="nav-back" href="index.html#about">
-    <span>←</span> Back
-  </a>
+  <a class="nav-back" href="index.html#about">← Back</a>
 </nav>
 
-<!-- HERO -->
-<header class="cs-hero">
-  <div>
-    <div class="cs-eyebrow">Five years · BILL · Sr. IC through Director</div>
-    <h1 class="cs-headline">What it's like to<br>work <em>with me.</em></h1>
-    <p class="cs-subhead">The through-line across every role I've held: calm under pressure, high standards without ego, and a habit of making the environment around the work better — for the team, the process, and the product.</p>
+<div class="intro">
+  <div class="intro-label">You found it</div>
+  <h1 class="intro-headline">I care about the<br>work <em>around</em> the work.</h1>
+</div>
+
+<div class="canvas">
+
+  <!-- Left col -->
+  <div class="block reveal" data-delay="0">
+    <div class="block-label">How I show up for the team</div>
+    <p class="block-text">I attend weekly design review meetings — not just to review my own work, but to help other designers improve theirs. That means giving direct feedback, connecting people to previous work they can learn from, and making introductions to the subject matter experts who can unblock them.</p>
+    <p class="block-text">I run workshops to get cross-functional teams genuinely aligned on a problem space — not just in the same room, but actually seeing the same thing. That takes facilitation, not just slides.</p>
+    <p class="block-text"><strong>I want the team around me to be better.</strong> Not because it reflects well on me, but because better teammates make better products.</p>
   </div>
-  <div class="cs-meta">
-    <div class="cs-meta-item">
-      <div class="cs-meta-key">At BILL since</div>
-      <div class="cs-meta-val">2021</div>
+
+  <!-- Right col -->
+  <div class="block reveal" data-delay="100">
+    <div class="block-label">Tools I've built for other ICs</div>
+    <p class="block-text">A performance management tracker so designers can log their wins in real time, not scramble to remember them at review season. A library of tips for using AI tools effectively in a design workflow. Templates and frameworks for presenting work more clearly to cross-functional stakeholders.</p>
+    <p class="block-text">These aren't officially assigned projects. They're things I noticed were missing and <strong>built anyway</strong> — because the gap was real and the cost of not having them was paid by everyone.</p>
+  </div>
+
+  <!-- Quotes -->
+  <div class="quotes">
+    <div class="quote" data-reveal>
+      <div class="quote-mark">"</div>
+      <p class="quote-text">His business acumen, understanding of our products, understanding of the market and the knowledge of design concepts adds tremendous value to the leadership team as well as the broader AR team.</p>
     </div>
-    <div class="cs-meta-item">
-      <div class="cs-meta-key">Levels held</div>
-      <div class="cs-meta-val">Sr. IC · Manager · Sr. Manager · Director</div>
+    <div class="quote" data-reveal>
+      <div class="quote-mark">"</div>
+      <p class="quote-text">Ben was instrumental in building, launching and driving adoption of the Design Quality initiative across BILL.</p>
     </div>
-    <div class="cs-meta-item">
-      <div class="cs-meta-key">Known for</div>
-      <div class="cs-meta-val">Calm leadership · Cross-functional trust · Design quality</div>
+    <div class="quote" data-reveal>
+      <div class="quote-mark">"</div>
+      <p class="quote-text">Ben took on the challenge to support all the design needs for my entire team without hesitation and without any guarantees that he would get any extra help — and he changed the momentum for my team.</p>
     </div>
   </div>
-</header>
 
-<div class="cs-rule"></div>
-
-<div class="cs-body">
-
-  <!-- 01 — The pattern -->
-  <section class="cs-section" data-reveal>
-    <div class="cs-section-label"><strong>01</strong> The pattern</div>
-    <div class="cs-content">
-      <p class="cs-lead">At every level, the same things showed up: calm through change, high standards, and a habit of <em>making things better</em> around me.</p>
-      <p class="cs-body-text">My career at BILL started with quickly earning trust in ambiguity — integrating acquired products, building strong cross-functional relationships, and establishing design as a credible partner in new spaces. From there it expanded into people leadership, org-level quality transformation, and high-leverage strategic product work.</p>
-      <p class="cs-body-text">From FY22 forward, the pattern in my reviews is remarkably consistent: recognized for calm leadership through change, strong communication, deep customer advocacy, and a habit of making the environment around the work better — through clearer process, stronger teams, and higher standards.</p>
-
-      <div class="cs-traits">
-        <div class="cs-trait">
-          <div class="cs-trait-title">Customer centricity</div>
-          <div class="cs-trait-body">Pushing teams toward the real customer problem, grounding decisions in research, usability testing, and direct feedback — not opinion.</div>
+  <!-- AI -->
+  <div class="ai-section reveal" data-delay="0">
+    <div class="ai-label">AI in practice</div>
+    <div class="ai-grid">
+      <div class="ai-card">
+        <div class="ai-card-title">Executive buy-in videos</div>
+        <div class="ai-card-body">Built rapid internal marketing videos to get executive support for AI investment in AR — scripted, generated imagery, video effects, and cloned my own voice for narration. No production team.</div>
+        <div class="ai-card-tags">
+          <span class="ai-tag">Gemini</span>
+          <span class="ai-tag">MidJourney</span>
+          <span class="ai-tag">Runway</span>
+          <span class="ai-tag">ElevenLabs</span>
+          <span class="ai-tag">Suno</span>
         </div>
-        <div class="cs-trait">
-          <div class="cs-trait-title">Ownership mindset</div>
-          <div class="cs-trait-body">Stepping into ambiguous spaces, taking on new domains, and helping move complex initiatives forward even when resources are constrained.</div>
+      </div>
+      <div class="ai-card">
+        <div class="ai-card-title">Customer feedback tool</div>
+        <div class="ai-card-body">Scours surveys and support Slack channels, themes the signals automatically, and surfaces patterns across entry points — cutting synthesis time significantly.</div>
+        <div class="ai-card-tags">
+          <span class="ai-tag">Custom build</span>
         </div>
-        <div class="cs-trait">
-          <div class="cs-trait-title">High standards</div>
-          <div class="cs-trait-body">Raising the bar for design quality, operationalizing clearer review practices, and making design thinking more rigorous and reusable across teams.</div>
+      </div>
+      <div class="ai-card">
+        <div class="ai-card-title">Research synthesis gem</div>
+        <div class="ai-card-body">A Gemini Gem that reads NotebookLM research docs and synthesizes customer interview transcripts into structured input for design decisions.</div>
+        <div class="ai-card-tags">
+          <span class="ai-tag">Gemini</span>
+          <span class="ai-tag">NotebookLM</span>
         </div>
-        <div class="cs-trait">
-          <div class="cs-trait-title">Authenticity</div>
-          <div class="cs-trait-body">Building trust and psychological safety, coaching with empathy, bringing positive energy to teams, and helping people do their best work without ego.</div>
+      </div>
+      <div class="ai-card">
+        <div class="ai-card-title">Performance logging agent</div>
+        <div class="ai-card-body">A Glean agent that logs wins and work against job expectations throughout the year — so performance conversations are informed by evidence, not memory.</div>
+        <div class="ai-card-tags">
+          <span class="ai-tag">Glean</span>
+        </div>
+      </div>
+      <div class="ai-card">
+        <div class="ai-card-title">Prototyping with code</div>
+        <div class="ai-card-body">Regularly use Figma Make, VS Code, and Claude Code to prototype interactions that need to be felt, not just described. Code as a design material.</div>
+        <div class="ai-card-tags">
+          <span class="ai-tag">Figma Make</span>
+          <span class="ai-tag">Claude Code</span>
+        </div>
+      </div>
+      <div class="ai-card">
+        <div class="ai-card-title">Outside work</div>
+        <div class="ai-card-body">Built family travel games on mobile with Bolt. The curiosity doesn't stop at the end of the workday — it's just how I think about problems.</div>
+        <div class="ai-card-tags">
+          <span class="ai-tag">Bolt</span>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- 02 — In their words -->
-  <section class="cs-section" data-reveal>
-    <div class="cs-section-label"><strong>02</strong> In their words</div>
-    <div class="cs-content">
-      <p class="cs-lead">A selection of quotes from performance reviews across five years.</p>
-
-      <div class="cs-quotes">
-        <div class="cs-quote-card">
-          <p class="cs-quote-text">"From the get-go he made strong relationships and then harnessed them to our group's needs."</p>
-          <p class="cs-quote-attr">— Peer review, BILL</p>
-        </div>
-        <div class="cs-quote-card">
-          <p class="cs-quote-text">"Bringing the engineers into your thought process has enabled the team to deliver on time and release a much higher quality product."</p>
-          <p class="cs-quote-attr">— Cross-functional partner, BILL</p>
-        </div>
-        <div class="cs-quote-card">
-          <p class="cs-quote-text">"You navigated this with confidence and calm, not getting frustrated at the changes and providing your team the stability they needed."</p>
-          <p class="cs-quote-attr">— Manager review, BILL</p>
-        </div>
-        <div class="cs-quote-card">
-          <p class="cs-quote-text">"His business acumen, understanding of our products, understanding of the market and the knowledge of design concepts adds tremendous value to the leadership team as well as the broader AR team."</p>
-          <p class="cs-quote-attr">— Leadership review, BILL</p>
-        </div>
-        <div class="cs-quote-card">
-          <p class="cs-quote-text">"Ben was instrumental in building, launching and driving adoption of the Design Quality initiative across BILL."</p>
-          <p class="cs-quote-attr">— Peer review, BILL</p>
-        </div>
-        <div class="cs-quote-card">
-          <p class="cs-quote-text">"Ben took on the challenge to support all the design needs for my entire team without hesitation and without any guarantees that he would get any extra help — and he changed the momentum for my team."</p>
-          <p class="cs-quote-attr">— Cross-functional partner, BILL</p>
-        </div>
-        <div class="cs-quote-card">
-          <p class="cs-quote-text">"Ben has gone above and beyond in the Sr. Design Manager role and has amply demonstrated his readiness to take on a Director scope and role."</p>
-          <p class="cs-quote-attr">— Manager review, BILL</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 03 — AI -->
-  <section class="cs-section" data-reveal>
-    <div class="cs-section-label"><strong>03</strong> AI & tools</div>
-    <div class="cs-content">
-      <p class="cs-lead">I don't wait for AI to become obvious. I experiment early, find what's actually useful, and <em>build with it.</em></p>
-      <p class="cs-body-text">I've been an early and active explorer of AI tools — not just for design tasks, but for building real things that solve real problems at work and at home. A few examples:</p>
-
-      <div class="cs-tools">
-        <div class="cs-tool">
-          <div class="cs-tool-num">1</div>
-          <div>
-            <div class="cs-tool-title">Executive buy-in videos for AI investment</div>
-            <div class="cs-tool-body">Built rapid internal marketing videos to get executive support for AI investment in AR. Scripted, generated imagery, created video and motion effects, and cloned my own voice for the narration — without a production team.</div>
-            <div class="cs-tool-stack">
-              <span class="cs-tool-tag">Gemini</span>
-              <span class="cs-tool-tag">MidJourney</span>
-              <span class="cs-tool-tag">Runway</span>
-              <span class="cs-tool-tag">ElevenLabs</span>
-              <span class="cs-tool-tag">Suno</span>
-              <span class="cs-tool-tag">Jitter</span>
-            </div>
-          </div>
-        </div>
-        <div class="cs-tool">
-          <div class="cs-tool-num">2</div>
-          <div>
-            <div class="cs-tool-title">Customer feedback synthesis tool</div>
-            <div class="cs-tool-body">Built a tool that scours all entry points for customer feedback — surveys, support Slack channels — and themes them automatically, cutting the time to synthesize signals across channels.</div>
-            <div class="cs-tool-stack">
-              <span class="cs-tool-tag">Custom build</span>
-            </div>
-          </div>
-        </div>
-        <div class="cs-tool">
-          <div class="cs-tool-num">3</div>
-          <div>
-            <div class="cs-tool-title">Research synthesis gem</div>
-            <div class="cs-tool-body">Built a Gemini Gem that reads NotebookLM research docs to synthesize customer interview transcripts into product insights — turning hours of raw transcript into structured input for design decisions.</div>
-            <div class="cs-tool-stack">
-              <span class="cs-tool-tag">Gemini</span>
-              <span class="cs-tool-tag">NotebookLM</span>
-            </div>
-          </div>
-        </div>
-        <div class="cs-tool">
-          <div class="cs-tool-num">4</div>
-          <div>
-            <div class="cs-tool-title">Performance logging agent</div>
-            <div class="cs-tool-body">Created a Glean agent to solve the problem of keeping up with logging wins and work against job expectations — so performance conversations are informed by evidence, not memory.</div>
-            <div class="cs-tool-stack">
-              <span class="cs-tool-tag">Glean</span>
-            </div>
-          </div>
-        </div>
-        <div class="cs-tool">
-          <div class="cs-tool-num">5</div>
-          <div>
-            <div class="cs-tool-title">Prototyping with AI-native tools</div>
-            <div class="cs-tool-body">Regularly prototype and explore with Figma Make, VS Code, and Claude Code — using code as a design material for things that need real interaction to evaluate.</div>
-            <div class="cs-tool-stack">
-              <span class="cs-tool-tag">Figma Make</span>
-              <span class="cs-tool-tag">VS Code</span>
-              <span class="cs-tool-tag">Claude Code</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="cs-learning">
-        <div class="cs-learning-label">On AI and design</div>
-        <p class="cs-learning-text">The designers who will matter most in the next five years aren't the ones who use AI tools — it's the ones who <em>build judgment about when and how to use them.</em> That's what I'm developing.</p>
-      </div>
-    </div>
-  </section>
+  <!-- Closing -->
+  <div class="closing reveal" data-delay="0">
+    <p class="closing-text">The designers who will matter most in the next five years aren't the ones who use AI tools — they're the ones who build <em>judgment about when and how to use them.</em></p>
+  </div>
 
 </div>
 
-<footer class="cs-footer-nav">
-  <a class="cs-footer-link" href="index.html#about">← Back to about</a>
-  <a class="cs-footer-link" href="index.html#work">View work ↗</a>
+<footer class="foot">
+  <a class="foot-link" href="index.html#about">← Back to about</a>
+  <a class="foot-link" href="index.html#work">View work →</a>
 </footer>
 
 <script>
@@ -458,22 +342,20 @@
     ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
     requestAnimationFrame(animRing);
   })();
-  document.querySelectorAll('a, button').forEach(function(el) {
+  document.querySelectorAll('a').forEach(function(el) {
     el.addEventListener('mouseenter', function() { document.body.classList.add('cursor-hover'); });
     el.addEventListener('mouseleave', function() { document.body.classList.remove('cursor-hover'); });
-  });
-
-  window.addEventListener('scroll', function() {
-    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10);
   });
 
   var obs = new IntersectionObserver(function(entries) {
     entries.forEach(function(entry) {
       if (entry.isIntersecting) { entry.target.classList.add('in'); obs.unobserve(entry.target); }
     });
-  }, { threshold: 0.08, rootMargin: '0px 0px 120px 0px' });
+  }, { threshold: 0.08, rootMargin: '0px 0px 80px 0px' });
 
-  document.querySelectorAll('[data-reveal]').forEach(function(el) { obs.observe(el); });
+  document.querySelectorAll('.reveal, [data-reveal]').forEach(function(el) {
+    obs.observe(el);
+  });
 })();
 </script>
 </body>
