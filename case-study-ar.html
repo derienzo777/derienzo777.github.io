@@ -107,7 +107,7 @@
   .cs-caveat {
     max-width: var(--max); margin: 0 auto;
     padding: 16px var(--pad-x);
-    display: flex; align-items: baseline; gap: 10px;
+    display: flex; align-items: flex-start; gap: 10px;
     border-bottom: 0.5px solid var(--rule);
   }
   .cs-caveat-label {
@@ -169,7 +169,7 @@
 
   /* ─── Image slots ─── */
   .cs-visual {
-    margin: 40px 0 5px; border-radius: 8px; overflow: hidden;
+    margin: 40px 0 6px; border-radius: 8px; overflow: hidden;
     background: var(--cream-mid);
     opacity: 0; transform: translateY(16px);
     transition: opacity 0.5s ease, transform 0.5s ease;
@@ -321,7 +321,7 @@
 <div class="cs-rule"></div>
 
 <div class="cs-caveat">
-  <span class="cs-caveat-label">Project Status: Pre-Launch</span>
+  <span class="cs-caveat-label">Project Status:<br>Pre-Launch</span>
   <span class="cs-caveat-text">To respect intellectual property and NDA guidelines, specific details and final UI have been abstractly represented.</span>
 </div>
 
