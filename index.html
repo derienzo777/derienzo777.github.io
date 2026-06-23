@@ -1018,18 +1018,13 @@
       </div>
 
       <div class="thumb" data-idx="1" data-row="0" data-delay="80">
-        <div class="thumb-inner">
-          <svg class="thumb-pattern" viewBox="0 0 240 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-            <line x1="0" y1="40" x2="240" y2="40" stroke="#048C7F" stroke-width="0.5"/>
-            <line x1="0" y1="80" x2="240" y2="80" stroke="#048C7F" stroke-width="0.5"/>
-            <line x1="0" y1="120" x2="240" y2="120" stroke="#048C7F" stroke-width="0.5"/>
-            <rect x="20" y="50" width="90" height="18" rx="3" fill="#048C7F"/>
-            <rect x="20" y="90" width="130" height="7" rx="2" fill="#048C7F"/>
-          </svg>
+        <div class="thumb-inner" style="padding:0">
+          <img class="thumb-img" src="assets/images/ai-lofi.png" alt="AI-native finance">
+          <div class="thumb-overlay"></div>
           <div class="thumb-sweep" aria-hidden="true"></div>
-          <div class="thumb-meta">
-            <div class="thumb-tag">BILL · 2026</div>
-            <div class="thumb-title">AI-native finance</div>
+          <div class="thumb-meta" style="position:absolute;bottom:0;left:0;padding:14px;z-index:2">
+            <div class="thumb-tag-light">BILL · 2026</div>
+            <div class="thumb-title-light">AI-native finance</div>
           </div>
         </div>
       </div>
@@ -1379,7 +1374,7 @@
   /* ── Evidence strip expand interaction ── */
   const workData = [
     { row:0, eyebrow:'Short-format publishing · iOS + Web · 2013', title:'A new format for <em>short-form stories</em>', desc:'Snippet was a publishing platform for rich, short-format books — multimedia chapters under 1,000 words. I led all product and brand design across iOS and web. It attracted writers like Pat Flynn and laid the groundwork for Booklaunch.', img:'https://thesnippetapp.com/web/assets/images/heroshot.jpg', imgLabel:'Snippet App', meta:[{k:'Role',v:'Sole designer'},{k:'Platform',v:'iOS · Web'},{k:'Outcome',v:'Led to acquisition'}] },
-    { row:0, eyebrow:'AI-native finance · BILL · 2026', title:'<em>Rethinking</em> finance workflows', desc:"BILL's product was built before AI was a realistic design material. Rethinking what the product believes users should have to do themselves — removing the tediousness of repetitive manual tasks.", img:'', imgLabel:'AI-native finance', meta:[{k:'Role',v:'Sr. Lead Designer'},{k:'Status',v:'In user testing'},{k:'Users',v:'500k SMBs'}] },
+    { row:0, eyebrow:'AI-native finance · BILL · 2026', title:'<em>Rethinking</em> finance workflows', desc:"BILL's product was built before AI was a realistic design material. Rethinking what the product believes users should have to do themselves — removing the tediousness of repetitive manual tasks.", img:'assets/images/ai-lofi.png', imgLabel:'AI-native finance', meta:[{k:'Role',v:'Sr. Lead Designer'},{k:'Status',v:'In user testing'},{k:'Users',v:'500k SMBs'}] },
     { row:0, eyebrow:'Payment feature · BILL · 2023', title:'Payment Links — <em>get paid faster</em>', desc:'A way for small business owners to share a payment link directly with customers — no invoice required. Designed the end-to-end flow from creation to payment confirmation across web and mobile.', img:'assets/images/payment-links.png', imgLabel:'Payment Links', meta:[{k:'Role',v:'Lead designer'},{k:'Platform',v:'Web · Mobile'},{k:'Outcome',v:'All-time high TPV'}] },
     { row:0, eyebrow:'SaaS products · 2013 to 2021 · Both acquired', title:'Two startups. <em>Both acquired.</em>', desc:'Booklaunch helped authors create professional book sales pages without a developer. Betterlance gave freelancers a CRM to grow their business. Both were acquired by Invoice2go in 2021.', img:'assets/images/sample-booklaunch.png', imgLabel:'Booklaunch & Betterlance', meta:[{k:'Role',v:'Co-founder, Head of Design'},{k:'Years',v:'8 years'},{k:'Outcome',v:'Acquired by Invoice2go'}] },
     { row:1, eyebrow:'Enterprise SaaS · See Sweet · 2020', title:'Innovation management for <em>energy companies</em>', desc:'As sole product designer at Forest Software, I designed an innovation management platform for large energy companies — tracking ideas from concept through funding and implementation.', img:'assets/images/forest.png', imgLabel:'Forest Software', meta:[{k:'Role',v:'Sole designer'},{k:'Sector',v:'Fortune 500 energy'},{k:'Type',v:'Enterprise SaaS'}] },
