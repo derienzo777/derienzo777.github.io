@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #F0EDE8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 60px;
+  }
+
+  .scene {
+    width: 960px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* MacBook lid / screen */
+  .lid {
+    width: 100%;
+    background: linear-gradient(180deg, #C8C8C8 0%, #B8B8B8 2%, #ADADAD 100%);
+    border-radius: 12px 12px 0 0;
+    padding: 14px 14px 10px;
+    position: relative;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.18),
+      0 2px 8px rgba(0,0,0,0.12),
+      0 8px 32px rgba(0,0,0,0.10);
+  }
+
+  .lid::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    border-radius: 12px 12px 0 0;
+    background: linear-gradient(90deg, #D4D4D4, #E0E0E0 40%, #D0D0D0 60%, #C4C4C4);
+  }
+
+  /* Camera notch */
+  .camera {
+    width: 8px;
+    height: 8px;
+    background: #2A2A2A;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    position: relative;
+    z-index: 2;
+  }
+  .camera::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 4px; height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+  }
+
+  /* Screen bezel */
+  .screen {
+    background: #111;
+    border-radius: 4px;
+    overflow: hidden;
+    line-height: 0;
+    position: relative;
+  }
+
+  .screen img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Screen glare */
+  .screen::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(255,255,255,0.06) 0%,
+      transparent 50%
+    );
+    pointer-events: none;
+  }
+
+  /* Hinge shadow */
+  .hinge {
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(180deg, #888 0%, #999 30%, #ADADAD 100%);
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.15);
+  }
+
+  /* Base / keyboard deck */
+  .base {
+    width: 103%;
+    margin-left: -1.5%;
+    background: linear-gradient(180deg, #B0B0B0 0%, #B8B8B8 30%, #ADADAD 100%);
+    border-radius: 0 0 10px 10px;
+    padding: 12px 24px 14px;
+    position: relative;
+    box-shadow:
+      0 4px 24px rgba(0,0,0,0.14),
+      0 1px 0 rgba(0,0,0,0.2) inset;
+  }
+
+  /* Keyboard area placeholder */
+  .keyboard {
+    background: rgba(0,0,0,0.08);
+    border-radius: 4px;
+    height: 80px;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    gap: 3px;
+    padding: 6px;
+  }
+
+  .key-row {
+    display: flex;
+    gap: 3px;
+  }
+
+  .key {
+    background: rgba(0,0,0,0.12);
+    border-radius: 2px;
+    flex: 1;
+    height: 100%;
+  }
+
+  .key.wide { flex: 1.6; }
+  .key.wider { flex: 2.2; }
+  .key.space { flex: 5; }
+
+  /* Trackpad */
+  .trackpad {
+    background: rgba(0,0,0,0.08);
+    border-radius: 4px;
+    width: 140px;
+    height: 28px;
+    margin: 6px auto 0;
+  }
+
+  /* Bottom edge / foot */
+  .foot {
+    width: 96%;
+    margin: 0 auto;
+    height: 3px;
+    background: linear-gradient(180deg, #999 0%, #B0B0B0 100%);
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+</style>
+</head>
+<body>
+<div class="scene">
+  <div class="lid">
+    <div class="camera"></div>
+    <div class="screen">
+      <img src="paymentlinks1.png" alt="Payment Links – BILL" />
+    </div>
+  </div>
+  <div class="hinge"></div>
+  <div class="base">
+    <div class="keyboard">
+      <div class="key-row">
+        <div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div>
+        <div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div>
+        <div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div>
+        <div class="key"></div><div class="key wide"></div>
+      </div>
+      <div class="key-row">
+        <div class="key wider"></div><div class="key"></div><div class="key"></div><div class="key"></div>
+        <div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div>
+        <div class="key"></div><div class="key"></div><div class="key"></div><div class="key wider"></div>
+      </div>
+      <div class="key-row">
+        <div class="key wide"></div><div class="key"></div><div class="key"></div><div class="key"></div>
+        <div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div>
+        <div class="key"></div><div class="key"></div><div class="key wide"></div>
+      </div>
+      <div class="key-row">
+        <div class="key wider"></div><div class="key wide"></div>
+        <div class="key space"></div>
+        <div class="key wide"></div><div class="key wider"></div>
+      </div>
+    </div>
+    <div class="trackpad"></div>
+  </div>
+  <div class="foot"></div>
+</div>
+</body>
+</html>
