@@ -1539,6 +1539,13 @@
       return;
     }
     if (activeByRow[row] === idx) { closeExpand(row); return; }
+    /* Close any open panel in the OTHER row first */
+    Object.keys(activeByRow).forEach(function(r) {
+      if (parseInt(r) !== row && activeByRow[r] !== -1) {
+        document.querySelectorAll('.thumb[data-row="'+r+'"]').forEach(function(t){ t.classList.remove('active'); });
+        closeExpand(parseInt(r));
+      }
+    });
     document.querySelectorAll('.thumb[data-row="'+row+'"]').forEach(function(t){ t.classList.remove('active'); });
     thumb.classList.add('active');
     activeByRow[row] = idx;
