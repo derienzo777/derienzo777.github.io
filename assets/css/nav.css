@@ -1,0 +1,50 @@
+/* ─── Nav (shared) ─── */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px var(--pad-x);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--cream);
+  border-bottom: 0.5px solid transparent;
+  transition: border-color 0.3s;
+}
+.nav.scrolled { border-color: var(--rule); }
+.nav-name {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-style: italic;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+
+/* Index nav extras */
+.nav-links { display: flex; gap: 36px; align-items: center; }
+.nav-link {
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); position: relative; transition: color 0.2s;
+}
+.nav-link::after {
+  content: ''; position: absolute; bottom: -2px; left: 0;
+  width: 0; height: 0.5px; background: var(--ink); transition: width 0.25s ease;
+}
+.nav-link:hover { color: var(--ink); }
+.nav-link:hover::after { width: 100%; }
+.nav-cta {
+  font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink); border: 0.5px solid var(--rule);
+  border-radius: 20px; padding: 8px 20px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.nav-cta:hover { background: var(--cream-mid); border-color: var(--muted); }
+
+/* Case study nav back link */
+.nav-back {
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: #787369; display: flex; align-items: center; gap: 8px;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--ink-warm); }
+.nav-back-arrow { font-size: 13px; }

@@ -1,0 +1,43 @@
+/* ─── Reset ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+img { display: block; max-width: 100%; }
+button { cursor: pointer; font-family: inherit; border: none; background: none; }
+a { color: inherit; text-decoration: none; }
+
+/* ─── Tokens ─── */
+:root {
+  --cream:      #F7F4EF;
+  --cream-mid:  #EDE9E2;
+  --cream-dark: #E5E0D8;
+  --ink:        #1A1814;
+  --ink-warm:   #048C7F;
+  --ink-mid:    #C8E9E6;
+  --muted:      #A8A39C;
+  --rule:       #D8D3CB;
+  --rule-light: #E8E4DE;
+
+  --serif: 'DM Serif Display', Georgia, serif;
+  --mono:  'DM Mono', 'Courier New', monospace;
+
+  --max:   1140px;
+  --pad-x: clamp(24px, 5vw, 72px);
+  --pad-x-wide: clamp(24px, 6vw, 96px);
+}
+
+/* ─── Base body ─── */
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ─── Mobile: restore cursor ─── */
+@media (max-width: 900px) {
+  body { cursor: auto; }
+}
