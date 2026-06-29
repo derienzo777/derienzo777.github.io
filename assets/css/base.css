@@ -13,7 +13,7 @@ a { color: inherit; text-decoration: none; }
   --ink:        rgb(39, 44, 93);
   --ink-warm:   #048C7F;
   --ink-mid:    #C8E9E6;
-  --muted:      rgba(39, 44, 93, 0.45);
+  --muted:      rgba(39, 44, 93, 0.72);
   --rule:       rgba(39, 44, 93, 0.14);
   --rule-light: rgba(39, 44, 93, 0.08);
 
