@@ -34,10 +34,4 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  cursor: none;
-}
-
-/* ─── Mobile: restore cursor ─── */
-@media (max-width: 900px) {
-  body { cursor: auto; }
 }

@@ -29,24 +29,24 @@
     font-size: 13px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    cursor: none;
     overflow-x: hidden;
   }
 
-  /* ─── Cursor ─── */
-  .cursor {
-    width: 7px; height: 7px; background: var(--cream); border-radius: 50%;
-    position: fixed; top: 0; left: 0; pointer-events: none;
-    transform: translate(-50%,-50%); z-index: 9999; opacity: 0; transition: opacity 0.3s;
-  }
+  /* ─── Cursor glow ─── */
+  .cursor { display: none; }
   .cursor-ring {
-    width: 32px; height: 32px; border: 0.5px solid rgba(247,244,239,0.35); border-radius: 50%;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle, rgba(15,168,150,0.28) 0%, rgba(15,168,150,0) 70%);
+    border-radius: 50%;
     position: fixed; top: 0; left: 0; pointer-events: none;
     transform: translate(-50%,-50%); z-index: 9998; opacity: 0;
-    transition: width 0.2s, height 0.2s, opacity 0.3s, border-color 0.2s;
+    transition: opacity 0.4s, width 0.25s ease, height 0.25s ease;
   }
-  body:hover .cursor, body:hover .cursor-ring { opacity: 1; }
-  body.cursor-hover .cursor-ring { width: 44px; height: 44px; border-color: var(--ink-warm); }
+  body:hover .cursor-ring { opacity: 1; }
+  body.cursor-hover .cursor-ring {
+    width: 110px; height: 110px;
+    background: radial-gradient(circle, rgba(15,168,150,0.4) 0%, rgba(15,168,150,0) 70%);
+  }
 
   /* ─── Nav ─── */
   .nav {
@@ -298,14 +298,10 @@
 
 <script>
 (function() {
-  var cursor = document.getElementById('cursor');
-  var ring   = document.getElementById('cursorRing');
-  var rx = 0, ry = 0;
+  var ring = document.getElementById('cursorRing');
   document.addEventListener('mousemove', function(e) {
-    cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
-    rx += (e.clientX - rx) * 0.12; ry += (e.clientY - ry) * 0.12;
+    ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px';
   });
-  (function loop() { ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(loop); })();
   document.querySelectorAll('a').forEach(function(el) {
     el.addEventListener('mouseenter', function() { document.body.classList.add('cursor-hover'); });
     el.addEventListener('mouseleave', function() { document.body.classList.remove('cursor-hover'); });
