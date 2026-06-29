@@ -7,15 +7,15 @@ a { color: inherit; text-decoration: none; }
 
 /* ─── Tokens ─── */
 :root {
-  --cream:      #F7F4EF;
-  --cream-mid:  #EDE9E2;
-  --cream-dark: #E5E0D8;
-  --ink:        #1A1814;
+  --cream:      rgb(234, 241, 241);
+  --cream-mid:  rgb(218, 230, 230);
+  --cream-dark: rgb(205, 220, 220);
+  --ink:        rgb(39, 44, 93);
   --ink-warm:   #048C7F;
   --ink-mid:    #C8E9E6;
-  --muted:      #A8A39C;
-  --rule:       #D8D3CB;
-  --rule-light: #E8E4DE;
+  --muted:      rgba(39, 44, 93, 0.45);
+  --rule:       rgba(39, 44, 93, 0.14);
+  --rule-light: rgba(39, 44, 93, 0.08);
 
   --serif: 'DM Serif Display', Georgia, serif;
   --mono:  'DM Mono', 'Courier New', monospace;

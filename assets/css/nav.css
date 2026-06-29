@@ -43,7 +43,7 @@
 /* Case study nav back link */
 .nav-back {
   font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
-  color: #787369; display: flex; align-items: center; gap: 8px;
+  color: rgba(39,44,93,0.55); display: flex; align-items: center; gap: 8px;
   transition: color 0.2s;
 }
 .nav-back:hover { color: var(--ink-warm); }
